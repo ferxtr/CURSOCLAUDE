@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Crea Infoproductos, Creativos y Campañas de Meta en Minutos con Claude IA</title>
+<meta name="description" content="Aprende el paso a paso para crear infoproductos, anuncios que venden y campañas de Meta Ads en menos de 3 horas usando Claude IA. Sin saber nada de IA. Deja de pagar Canva, CapCut y Gamma." />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Crea Infoproductos y Campañas de Meta en Minutos con Claude IA" />
+<meta property="og:description" content="De cero a vender en menos de 3 horas. Infoproducto + creativos + campañas de Meta, todo con IA. Sin experiencia previa." />
+<meta property="og:locale" content="es_LA" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0a0a0f;
+    --bg-2:#101019;
+    --card:#15151f;
+    --card-2:#1b1b29;
+    --line:#262636;
+    --txt:#f5f5f7;
+    --muted:#a0a0b0;
+    --brand:#d97757;       /* Claude warm accent */
+    --brand-2:#e8916f;
+    --brand-soft:rgba(217,119,87,.12);
+    --green:#34d399;
+    --green-soft:rgba(52,211,153,.12);
+    --yellow:#fbbf24;
+    --radius:18px;
+    --maxw:1120px;
+    --shadow:0 20px 60px -20px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--txt);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+  .center{text-align:center}
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    background:linear-gradient(135deg,var(--brand),var(--brand-2));
+    color:#1a0f0a;font-weight:800;font-size:1.05rem;
+    padding:18px 34px;border-radius:999px;border:none;cursor:pointer;
+    box-shadow:0 14px 30px -8px rgba(217,119,87,.55);
+    transition:transform .15s ease,box-shadow .15s ease,filter .15s ease;
+    text-align:center;letter-spacing:.2px;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 20px 40px -8px rgba(217,119,87,.7);filter:brightness(1.05)}
+  .btn:active{transform:translateY(0)}
+  .btn.lg{font-size:1.18rem;padding:22px 44px}
+  .btn.full{width:100%}
+  .btn-sub{display:block;margin-top:12px;color:var(--muted);font-size:.85rem}
+
+  .pulse{animation:pulse 2.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 14px 30px -8px rgba(217,119,87,.55),0 0 0 0 rgba(217,119,87,.45)}70%{box-shadow:0 14px 30px -8px rgba(217,119,87,.55),0 0 0 18px rgba(217,119,87,0)}100%{box-shadow:0 14px 30px -8px rgba(217,119,87,.55),0 0 0 0 rgba(217,119,87,0)}}
+
+  /* ---------- Eyebrow / chips ---------- */
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--brand-soft);color:var(--brand-2);
+    border:1px solid rgba(217,119,87,.25);
+    padding:8px 16px;border-radius:999px;font-weight:600;font-size:.82rem;
+    letter-spacing:.4px;text-transform:uppercase;
+  }
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px var(--green-soft)}
+
+  /* ---------- Topbar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(10,10,15,.8);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.1rem}
+  .logo .mark{
+    width:30px;height:30px;border-radius:8px;
+    background:linear-gradient(135deg,var(--brand),var(--brand-2));
+    display:grid;place-items:center;color:#1a0f0a;font-weight:900;font-size:1rem;
+  }
+  .topbar .btn{padding:12px 22px;font-size:.95rem}
+  @media(max-width:600px){.topbar .btn{padding:10px 18px;font-size:.85rem}}
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative;padding:64px 0 40px;overflow:hidden}
+  .hero::before{
+    content:"";position:absolute;inset:0;z-index:0;
+    background:
+      radial-gradient(60% 50% at 50% 0%,rgba(217,119,87,.18),transparent 70%),
+      radial-gradient(40% 40% at 85% 20%,rgba(99,102,241,.12),transparent 70%);
+  }
+  .hero .wrap{position:relative;z-index:1}
+  .hero h1{
+    font-size:clamp(2.1rem,5.4vw,3.6rem);line-height:1.08;font-weight:900;
+    letter-spacing:-1px;margin:22px auto 18px;max-width:14ch;
+  }
+  .hero h1 .hl{color:var(--brand-2);position:relative}
+  .hero p.lead{font-size:clamp(1.05rem,2.4vw,1.3rem);color:var(--muted);max-width:60ch;margin:0 auto 14px}
+  .hero .meta-row{display:flex;flex-wrap:wrap;gap:10px 18px;justify-content:center;margin:26px 0 8px;color:var(--muted);font-size:.95rem}
+  .hero .meta-row span{display:inline-flex;align-items:center;gap:8px}
+  .check{color:var(--green);font-weight:900}
+  .hero .cta-wrap{margin:30px auto 0}
+
+  /* mock browser */
+  .mock{
+    margin:46px auto 0;max-width:880px;background:var(--card);
+    border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);
+  }
+  .mock .bar{display:flex;gap:7px;padding:14px 16px;border-bottom:1px solid var(--line);background:var(--card-2)}
+  .mock .bar i{width:11px;height:11px;border-radius:50%;background:#3a3a4a}
+  .mock .bar i:nth-child(1){background:#ff5f57}
+  .mock .bar i:nth-child(2){background:#febc2e}
+  .mock .bar i:nth-child(3){background:#28c840}
+  .mock .body{padding:26px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:640px){.mock .body{grid-template-columns:1fr}}
+  .mock .panel{background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:18px}
+  .mock .panel h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:10px}
+  .mock .typing{font-size:.95rem;color:var(--txt)}
+  .mock .pill{display:inline-block;background:var(--brand-soft);color:var(--brand-2);border-radius:6px;padding:3px 9px;font-size:.78rem;margin:3px 4px 0 0;font-weight:600}
+
+  /* ---------- Logos / replace ---------- */
+  .replace{padding:44px 0 10px}
+  .replace .wrap{text-align:center}
+  .replace p{color:var(--muted);font-size:.95rem;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:22px}
+  .tools{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center}
+  .tool{
+    position:relative;display:inline-flex;align-items:center;gap:8px;
+    border:1px solid var(--line);background:var(--card);border-radius:12px;
+    padding:14px 20px;font-weight:700;color:#777788;font-size:1rem;
+  }
+  .tool .strike{position:absolute;left:8px;right:8px;top:50%;height:2px;background:#e25555;transform:rotate(-7deg);border-radius:2px}
+  .replace .arrow{font-size:1.6rem;color:var(--muted);margin:18px 0 6px}
+  .one-tool{
+    display:inline-flex;align-items:center;gap:12px;margin-top:6px;
+    background:linear-gradient(135deg,var(--brand-soft),transparent);
+    border:1px solid rgba(217,119,87,.35);border-radius:14px;padding:16px 26px;
+    font-weight:800;font-size:1.25rem;
+  }
+  .one-tool .mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;color:#1a0f0a;font-weight:900}
+
+  /* ---------- Sections ---------- */
+  section{padding:64px 0}
+  .section-head{text-align:center;max-width:46ch;margin:0 auto 44px}
+  .section-head h2{font-size:clamp(1.7rem,4vw,2.6rem);font-weight:900;letter-spacing:-.5px;line-height:1.12;margin:14px 0 12px}
+  .section-head p{color:var(--muted);font-size:1.08rem}
+
+  /* pain */
+  .pain{background:var(--bg-2)}
+  .pain-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:760px;margin:0 auto}
+  @media(max-width:600px){.pain-grid{grid-template-columns:1fr}}
+  .pain-item{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+  .pain-item .x{color:#e25555;font-weight:900;font-size:1.2rem;line-height:1.3}
+  .pain-item p{color:#cfcfda;font-size:.98rem}
+
+  /* steps / what you'll do */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media(max-width:860px){.steps{grid-template-columns:1fr}}
+  .step{
+    position:relative;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:30px 26px;overflow:hidden;
+    transition:transform .2s ease,border-color .2s ease;
+  }
+  .step:hover{transform:translateY(-4px);border-color:rgba(217,119,87,.4)}
+  .step .num{
+    font-size:3.2rem;font-weight:900;line-height:1;
+    background:linear-gradient(135deg,var(--brand),var(--brand-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;opacity:.95;
+  }
+  .step h3{font-size:1.25rem;font-weight:800;margin:14px 0 10px}
+  .step p{color:var(--muted);font-size:.98rem}
+  .step ul{list-style:none;margin-top:14px;display:grid;gap:8px}
+  .step ul li{display:flex;gap:9px;align-items:flex-start;font-size:.92rem;color:#cfcfda}
+  .step ul li::before{content:"✓";color:var(--green);font-weight:900;flex:0 0 auto}
+
+  /* timeline 3h */
+  .timeline{background:linear-gradient(180deg,var(--bg),var(--bg-2))}
+  .tl{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:10px}
+  @media(max-width:760px){.tl{grid-template-columns:1fr 1fr}}
+  @media(max-width:440px){.tl{grid-template-columns:1fr}}
+  .tl-item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 18px;text-align:center}
+  .tl-item .t{font-size:1.5rem;font-weight:900;color:var(--brand-2)}
+  .tl-item .l{color:var(--muted);font-size:.9rem;margin-top:6px}
+
+  /* benefits / learn */
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:860px){.grid-3{grid-template-columns:1fr}}
+  .feat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px}
+  .feat .ic{width:48px;height:48px;border-radius:12px;background:var(--brand-soft);display:grid;place-items:center;font-size:1.4rem;margin-bottom:14px}
+  .feat h3{font-size:1.12rem;font-weight:800;margin-bottom:8px}
+  .feat p{color:var(--muted);font-size:.95rem}
+
+  /* for whom */
+  .who-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;max-width:900px;margin:0 auto}
+  @media(max-width:720px){.who-grid{grid-template-columns:1fr}}
+  .who-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px}
+  .who-card h3{font-size:1.2rem;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+  .who-card ul{list-style:none;display:grid;gap:12px}
+  .who-card li{display:flex;gap:10px;align-items:flex-start;color:#cfcfda;font-size:.96rem}
+  .who-card.yes li::before{content:"✓";color:var(--green);font-weight:900}
+  .who-card.no li::before{content:"✕";color:#e25555;font-weight:900}
+
+  /* testimonials */
+  .tts{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media(max-width:860px){.tts{grid-template-columns:1fr}}
+  .tt{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+  .tt .stars{color:var(--yellow);letter-spacing:2px;margin-bottom:12px}
+  .tt p{color:#e3e3ec;font-size:.98rem;margin-bottom:18px}
+  .tt .who{display:flex;align-items:center;gap:12px}
+  .tt .av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:grid;place-items:center;color:#1a0f0a;font-weight:900}
+  .tt .who b{display:block;font-size:.95rem}
+  .tt .who span{color:var(--muted);font-size:.82rem}
+
+  /* pricing */
+  .price{background:var(--bg-2)}
+  .price-card{
+    max-width:560px;margin:0 auto;background:var(--card);
+    border:1px solid rgba(217,119,87,.4);border-radius:24px;padding:38px 32px;
+    box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .price-card::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 50% at 50% 0,rgba(217,119,87,.12),transparent 70%);pointer-events:none}
+  .price-card .ribbon{display:inline-block;background:var(--brand);color:#1a0f0a;font-weight:800;font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;padding:6px 14px;border-radius:999px;margin-bottom:18px}
+  .price-card h3{font-size:1.4rem;font-weight:800}
+  .price-old{color:var(--muted);text-decoration:line-through;font-size:1.2rem;margin-top:14px}
+  .price-now{font-size:3rem;font-weight:900;line-height:1;margin:4px 0 2px}
+  .price-now small{font-size:1rem;color:var(--muted);font-weight:600}
+  .price-note{color:var(--green);font-weight:700;font-size:.95rem;margin-bottom:20px}
+  .price-list{list-style:none;display:grid;gap:11px;text-align:left;margin:22px 0 26px}
+  .price-list li{display:flex;gap:10px;align-items:flex-start;font-size:.97rem;color:#e3e3ec}
+  .price-list li::before{content:"✓";color:var(--green);font-weight:900;flex:0 0 auto}
+  .price-list li b{color:#fff}
+  .pay-badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px;color:var(--muted);font-size:.82rem}
+
+  /* guarantee */
+  .guarantee{max-width:760px;margin:40px auto 0;background:var(--card);border:1px dashed rgba(52,211,153,.5);border-radius:var(--radius);padding:30px;display:flex;gap:22px;align-items:center}
+  @media(max-width:600px){.guarantee{flex-direction:column;text-align:center}}
+  .guarantee .seal{flex:0 0 auto;width:90px;height:90px;border-radius:50%;background:var(--green-soft);border:2px solid var(--green);display:grid;place-items:center;text-align:center;font-weight:900;color:var(--green);font-size:.8rem;line-height:1.1}
+  .guarantee h3{font-size:1.25rem;margin-bottom:8px}
+  .guarantee p{color:var(--muted);font-size:.97rem}
+
+  /* faq */
+  .faq-list{max-width:760px;margin:0 auto;display:grid;gap:12px}
+  .faq-item{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .faq-q{width:100%;text-align:left;background:none;border:none;color:var(--txt);font-size:1.02rem;font-weight:700;padding:20px 22px;cursor:pointer;display:flex;justify-content:space-between;gap:16px;align-items:center}
+  .faq-q .ic{flex:0 0 auto;transition:transform .25s ease;color:var(--brand-2);font-weight:900}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;color:var(--muted);font-size:.97rem}
+  .faq-a div{padding:0 22px 20px}
+  .faq-item.open .faq-a{max-height:320px}
+  .faq-item.open .faq-q .ic{transform:rotate(45deg)}
+
+  /* final cta */
+  .final{position:relative;text-align:center;background:linear-gradient(180deg,var(--bg-2),var(--bg))}
+  .final::before{content:"";position:absolute;inset:0;background:radial-gradient(55% 60% at 50% 30%,rgba(217,119,87,.18),transparent 70%)}
+  .final .wrap{position:relative;z-index:1}
+  .final h2{font-size:clamp(1.8rem,4.4vw,2.8rem);font-weight:900;letter-spacing:-.5px;margin-bottom:16px;max-width:18ch;margin-inline:auto}
+  .final p{color:var(--muted);font-size:1.1rem;max-width:54ch;margin:0 auto 30px}
+
+  /* countdown */
+  .count{display:flex;gap:10px;justify-content:center;margin:24px 0}
+  .count .box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:64px}
+  .count .box b{display:block;font-size:1.7rem;font-weight:900;color:var(--brand-2);line-height:1}
+  .count .box span{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:36px 0;color:var(--muted);font-size:.85rem}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+  footer a{color:var(--muted)}
+  footer a:hover{color:var(--txt)}
+  .disclaimer{max-width:var(--maxw);margin:18px auto 0;color:#62626f;font-size:.74rem;line-height:1.5;text-align:center}
+
+  /* sticky mobile bar */
+  .sticky-cta{
+    position:fixed;left:0;right:0;bottom:0;z-index:60;
+    background:rgba(10,10,15,.92);backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);padding:12px 16px;
+    display:none;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .sticky-cta .p{font-size:.85rem}
+  .sticky-cta .p b{display:block;color:var(--brand-2);font-size:1.05rem}
+  .sticky-cta .btn{padding:14px 22px;font-size:.95rem;white-space:nowrap}
+  @media(max-width:760px){.sticky-cta{display:flex}body{padding-bottom:78px}}
+
+  .fade{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+  .fade.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="wrap">
+    <div class="logo"><span class="mark">C</span> Curso Claude IA</div>
+    <a href="#precio" class="btn">Quiero acceder</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap center">
+    <span class="chip"><span class="dot"></span> Nuevo · 100% con Inteligencia Artificial</span>
+    <h1>Crea tu <span class="hl">infoproducto, tus creativos y tus campañas de Meta</span> en minutos con Claude IA</h1>
+    <p class="lead">El mismo anuncio con el que llegaste hasta acá lo vas a poder crear vos. Aprendé el paso a paso para lanzar y vender en <b style="color:#fff">menos de 3 horas</b> — sin saber absolutamente nada de IA.</p>
+
+    <div class="meta-row">
+      <span><span class="check">✓</span> Sin experiencia previa</span>
+      <span><span class="check">✓</span> Paso a paso en español</span>
+      <span><span class="check">✓</span> Para toda LATAM</span>
+    </div>
+
+    <div class="cta-wrap">
+      <a href="#precio" class="btn lg pulse">🚀 Empezar ahora mismo</a>
+      <span class="btn-sub">Acceso inmediato · Garantía de 7 días</span>
+    </div>
+
+    <!-- mock -->
+    <div class="mock fade">
+      <div class="bar"><i></i><i></i><i></i></div>
+      <div class="body">
+        <div class="panel">
+          <h4>Vos le pedís</h4>
+          <p class="typing">"Claude, creá un infoproducto sobre finanzas personales y armá 5 creativos con hooks para Meta Ads."</p>
+        </div>
+        <div class="panel">
+          <h4>Claude te entrega</h4>
+          <p class="typing">Infoproducto completo + guion de video + hooks + copys + estructura de campaña ✨</p>
+          <div style="margin-top:10px">
+            <span class="pill">Infoproducto</span>
+            <span class="pill">Creativos</span>
+            <span class="pill">Hooks</span>
+            <span class="pill">Subtítulos</span>
+            <span class="pill">Campaña Meta</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REPLACE TOOLS -->
+<section class="replace">
+  <div class="wrap">
+    <p>Dejá de pagar 4, 5 o 6 suscripciones todos los meses</p>
+    <div class="tools">
+      <span class="tool">Canva<span class="strike"></span></span>
+      <span class="tool">CapCut<span class="strike"></span></span>
+      <span class="tool">Gamma<span class="strike"></span></span>
+      <span class="tool">ChatGPT Plus<span class="strike"></span></span>
+      <span class="tool">Editores de video<span class="strike"></span></span>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="one-tool"><span class="mark">C</span> Todo con Claude IA</div>
+  </div>
+</section>
+
+<!-- PAIN -->
+<section class="pain">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="chip">¿Te pasa esto?</span>
+      <h2>Querés vender online pero te frena lo mismo de siempre</h2>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-item"><span class="x">✕</span><p>Pasás horas en Canva y CapCut y los creativos igual no convierten.</p></div>
+      <div class="pain-item"><span class="x">✕</span><p>No sabés qué infoproducto crear ni cómo estructurarlo para que se venda.</p></div>
+      <div class="pain-item"><span class="x">✕</span><p>Las campañas de Meta te parecen un mundo y tenés miedo de quemar plata.</p></div>
+      <div class="pain-item"><span class="x">✕</span><p>Pagás varias suscripciones de IA y herramientas todos los meses.</p></div>
+      <div class="pain-item"><span class="x">✕</span><p>Sentís que "no sabés de tecnología" y que la IA no es para vos.</p></div>
+      <div class="pain-item"><span class="x">✕</span><p>Ves a otros vendiendo infoproductos y no sabés por dónde empezar.</p></div>
+    </div>
+    <p class="center" style="margin-top:34px;font-size:1.15rem;color:#fff;font-weight:700">Lo que antes te llevaba semanas, ahora lo hacés en una tarde. Te muestro cómo. 👇</p>
+  </div>
+</section>
+
+<!-- 3 STEPS -->
+<section id="que-aprendes">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="chip">El sistema completo</span>
+      <h2>3 pilares para salir a vender con IA</h2>
+      <p>Claude va a crear tu infoproducto, armar tus creativos, escribir tus anuncios y diagramar tus campañas de Meta Ads por vos.</p>
+    </div>
+    <div class="steps">
+      <article class="step fade">
+        <div class="num">1</div>
+        <h3>Anuncios que venden en minutos</h3>
+        <p>Creá tus creativos con hooks que detienen el scroll, subtítulos automáticos y copys persuasivos — sin editores complicados.</p>
+        <ul>
+          <li>Hooks automáticos que enganchan</li>
+          <li>Subtítulos generados al instante</li>
+          <li>Guiones de video listos para grabar</li>
+          <li>Copys que venden, no que rellenan</li>
+        </ul>
+      </article>
+      <article class="step fade">
+        <div class="num">2</div>
+        <h3>Tu infoproducto, creado por vos</h3>
+        <p>Del mismo nivel y calidad que estás recibiendo ahora. Claude estructura, escribe y arma tu producto digital completo.</p>
+        <ul>
+          <li>Idea y validación del producto</li>
+          <li>Estructura y contenido completo</li>
+          <li>Listo para entregar a tus clientes</li>
+          <li>En tu nicho, con tu voz</li>
+        </ul>
+      </article>
+      <article class="step fade">
+        <div class="num">3</div>
+        <h3>Campañas de Meta Ads</h3>
+        <p>Configurá campañas de testeo y de escala con las herramientas de Claude, en pocos minutos y sin miedo a equivocarte.</p>
+        <ul>
+          <li>Estructura de testeo paso a paso</li>
+          <li>Estrategia de escala</li>
+          <li>Segmentación y presupuesto</li>
+          <li>Optimización con IA</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE 3H -->
+<section class="timeline">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="chip">⏱️ En menos de 3 horas</span>
+      <h2>De cero a vender en una sola tarde</h2>
+      <p>Seguí los pasos y terminá el día con todo listo para generar ingresos.</p>
+    </div>
+    <div class="tl">
+      <div class="tl-item fade"><div class="t">0:00</div><div class="l">Empezás desde cero, sin saber de IA</div></div>
+      <div class="tl-item fade"><div class="t">1:00</div><div class="l">Tu infoproducto creado por Claude</div></div>
+      <div class="tl-item fade"><div class="t">2:00</div><div class="l">Tus creativos y anuncios listos</div></div>
+      <div class="tl-item fade"><div class="t">3:00</div><div class="l">Campaña de Meta activada y vendiendo</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="chip">Lo que te llevás</span>
+      <h2>Todo lo que vas a poder hacer</h2>
+    </div>
+    <div class="grid-3">
+      <div class="feat fade"><div class="ic">⚡</div><h3>Velocidad real</h3><p>Tareas que antes tomaban días, resueltas en minutos con simples instrucciones.</p></div>
+      <div class="feat fade"><div class="ic">🎯</div><h3>Creativos que convierten</h3><p>Hooks, ganchos y copys pensados para vender, no solo para "verse lindos".</p></div>
+      <div class="feat fade"><div class="ic">💸</div><h3>Ahorrás en suscripciones</h3><p>Reemplazás Canva, CapCut, Gamma y más con una sola herramienta de IA.</p></div>
+      <div class="feat fade"><div class="ic">🧩</div><h3>Sin saber de IA</h3><p>Paso a paso, sin tecnicismos. Si sabés escribir un WhatsApp, podés hacerlo.</p></div>
+      <div class="feat fade"><div class="ic">📈</div><h3>Listo para escalar</h3><p>Campañas de testeo y de escala para crecer cuando encontrás lo que funciona.</p></div>
+      <div class="feat fade"><div class="ic">🌎</div><h3>Pensado para LATAM</h3><p>Ejemplos, lenguaje y casos aplicados a la realidad de nuestra región.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHOM -->
+<section class="pain">
+  <div class="wrap">
+    <div class="section-head"><h2>¿Es para vos?</h2></div>
+    <div class="who-grid">
+      <div class="who-card yes fade">
+        <h3>✅ Sí, si...</h3>
+        <ul>
+          <li>Querés crear y vender infoproductos sin complicarte.</li>
+          <li>Estás cansado de pagar mil herramientas distintas.</li>
+          <li>Querés anuncios que vendan sin ser diseñador ni editor.</li>
+          <li>Querés lanzar campañas de Meta sin quemar plata.</li>
+          <li>Empezás de cero y querés un paso a paso claro.</li>
+        </ul>
+      </div>
+      <div class="who-card no fade">
+        <h3>❌ No, si...</h3>
+        <ul>
+          <li>Buscás "hacerte rico de la noche a la mañana" sin trabajar.</li>
+          <li>No estás dispuesto a dedicarle ni una tarde.</li>
+          <li>Preferís seguir pagando 5 suscripciones todos los meses.</li>
+          <li>Creés que la IA "no es para vos" y no querés intentarlo.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="chip">★ Resultados reales</span>
+      <h2>Lo que dicen quienes ya empezaron</h2>
+    </div>
+    <div class="tts">
+      <div class="tt fade">
+        <div class="stars">★★★★★</div>
+        <p>"Lancé mi primer infoproducto el mismo fin de semana. Los creativos los hice yo con Claude y la campaña salió en una hora."</p>
+        <div class="who"><div class="av">M</div><div><b>Mariana G.</b><span>Emprendedora · Argentina</span></div></div>
+      </div>
+      <div class="tt fade">
+        <div class="stars">★★★★★</div>
+        <p>"Dejé de pagar Canva y CapCut. Todo lo armo con IA ahora. El ahorro mensual ya pagó el curso varias veces."</p>
+        <div class="who"><div class="av">J</div><div><b>Jorge P.</b><span>Marketing digital · México</span></div></div>
+      </div>
+      <div class="tt fade">
+        <div class="stars">★★★★★</div>
+        <p>"No sabía nada de IA ni de Meta Ads. Seguí los pasos y en una tarde tenía mi anuncio andando. Increíble."</p>
+        <div class="who"><div class="av">C</div><div><b>Camila R.</b><span>Coach · Colombia</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="price" id="precio">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="chip">🔥 Oferta de lanzamiento</span>
+      <h2>Empezá hoy con acceso completo</h2>
+    </div>
+    <div class="price-card fade center">
+      <span class="ribbon">Cupos limitados</span>
+      <h3>Curso Claude IA — Infoproductos, Creativos & Meta Ads</h3>
+      <div class="price-old">Precio normal: USD 197</div>
+      <div class="price-now">USD 47 <small>/ pago único</small></div>
+      <div class="price-note">Acceso de por vida + actualizaciones gratis</div>
+      <ul class="price-list">
+        <li><b>Módulo 1:</b> Creativos y anuncios que venden en minutos</li>
+        <li><b>Módulo 2:</b> Creá tu infoproducto completo con IA</li>
+        <li><b>Módulo 3:</b> Campañas de Meta Ads (testeo + escala)</li>
+        <li><b>Bonus:</b> Plantillas de prompts listos para copiar y pegar</li>
+        <li><b>Bonus:</b> Biblioteca de hooks que detienen el scroll</li>
+        <li>Acceso inmediato y de por vida</li>
+        <li>Soporte y comunidad</li>
+      </ul>
+      <a href="#" id="cta-buy" class="btn lg full pulse">💳 Quiero acceder ahora</a>
+      <span class="btn-sub">Pago 100% seguro · Acceso inmediato</span>
+      <div class="pay-badges">
+        <span>💳 Tarjeta</span><span>🏦 Transferencia</span><span>📲 Mercado Pago</span><span>🅿️ PayPal</span>
+      </div>
+    </div>
+
+    <!-- GUARANTEE -->
+    <div class="guarantee fade">
+      <div class="seal">7 DÍAS<br>GARANTÍA</div>
+      <div>
+        <h3>Garantía de satisfacción total</h3>
+        <p>Probá el curso sin riesgo. Si en 7 días sentís que no es para vos, te devolvemos el 100% de tu dinero. Sin preguntas, sin vueltas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section>
+  <div class="wrap">
+    <div class="section-head"><h2>Preguntas frecuentes</h2></div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">¿Necesito saber de inteligencia artificial? <span class="ic">+</span></button>
+        <div class="faq-a"><div>No. El curso está pensado para que empieces desde cero. Si sabés escribir un mensaje de WhatsApp, podés seguir el paso a paso.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Cuánto tarda en hacer efecto? <span class="ic">+</span></button>
+        <div class="faq-a"><div>En menos de 3 horas podés tener tu infoproducto creado, tus creativos listos y tu campaña de Meta activada.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Sirve para mi país en LATAM? <span class="ic">+</span></button>
+        <div class="faq-a"><div>Sí. Todo está en español y pensado para emprendedores de toda Latinoamérica, con ejemplos y casos de nuestra región.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Tengo que pagar otras herramientas además del curso? <span class="ic">+</span></button>
+        <div class="faq-a"><div>El objetivo es justamente que dejes de pagar varias suscripciones. Te mostramos cómo hacer casi todo con Claude.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Y si no me gusta? <span class="ic">+</span></button>
+        <div class="faq-a"><div>Tenés 7 días de garantía. Si no es para vos, te devolvemos el 100% de tu inversión.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿El acceso es de por vida? <span class="ic">+</span></button>
+        <div class="faq-a"><div>Sí. Pagás una sola vez y tenés acceso de por vida, incluyendo las futuras actualizaciones.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final">
+  <div class="wrap">
+    <span class="chip">⏳ La oferta termina pronto</span>
+    <h2>El próximo anuncio que vea LATAM puede ser el tuyo</h2>
+    <p>Llegaste hasta acá por un anuncio hecho con IA. Hoy podés aprender a crear el tuyo, tu infoproducto y tu campaña — y salir a vender esta misma semana.</p>
+    <div class="count" id="countdown">
+      <div class="box"><b id="cd-h">02</b><span>Horas</span></div>
+      <div class="box"><b id="cd-m">59</b><span>Min</span></div>
+      <div class="box"><b id="cd-s">59</b><span>Seg</span></div>
+    </div>
+    <a href="#precio" class="btn lg pulse">🚀 Quiero mi acceso ahora</a>
+    <span class="btn-sub">Acceso inmediato · Garantía de 7 días · Pago único</span>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="logo"><span class="mark">C</span> Curso Claude IA</div>
+    <div>© <span id="year"></span> Curso Claude IA — Todos los derechos reservados</div>
+    <div><a href="#">Términos</a> · <a href="#">Privacidad</a> · <a href="#">Contacto</a></div>
+  </div>
+  <p class="disclaimer">Este sitio no forma parte de Meta Platforms, Inc. ni de Anthropic, y no está avalado por ellos. "Claude" es una marca de Anthropic; "Meta", "Facebook" e "Instagram" son marcas de Meta Platforms, Inc. Los resultados mencionados son ilustrativos y dependen del esfuerzo, el nicho y la dedicación de cada persona. No garantizamos ingresos específicos.</p>
+</footer>
+
+<!-- STICKY MOBILE CTA -->
+<div class="sticky-cta">
+  <div class="p"><b>USD 47</b> Acceso de por vida</div>
+  <a href="#precio" class="btn">Acceder</a>
+</div>
+
+<script>
+  // year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(function(b){
+    b.addEventListener('click',function(){
+      var item=b.parentElement;
+      var open=item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(function(i){i.classList.remove('open')});
+      if(!open)item.classList.add('open');
+    });
+  });
+
+  // reveal on scroll
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}});
+  },{threshold:.12});
+  document.querySelectorAll('.fade').forEach(function(el){io.observe(el)});
+
+  // countdown (resets each visit — evergreen urgency)
+  (function(){
+    var total=3*60*60; // 3 hours
+    var saved=sessionStorage.getItem('cd_end');
+    var end= saved ? parseInt(saved,10) : Date.now()+total*1000;
+    sessionStorage.setItem('cd_end',end);
+    function pad(n){return n<10?'0'+n:''+n}
+    function tick(){
+      var left=Math.max(0,Math.floor((end-Date.now())/1000));
+      var h=Math.floor(left/3600),m=Math.floor((left%3600)/60),s=left%60;
+      var H=document.getElementById('cd-h'),M=document.getElementById('cd-m'),S=document.getElementById('cd-s');
+      if(H){H.textContent=pad(h);M.textContent=pad(m);S.textContent=pad(s)}
+      if(left<=0){end=Date.now()+total*1000;sessionStorage.setItem('cd_end',end)}
+    }
+    tick();setInterval(tick,1000);
+  })();
+
+  // CTA placeholder — reemplazar con tu link de pago (Hotmart, MercadoPago, Stripe, etc.)
+  document.getElementById('cta-buy').addEventListener('click',function(e){
+    e.preventDefault();
+    alert('Conectá acá tu link de pago (Hotmart / Mercado Pago / Stripe). Editá el href de #cta-buy en index.html.');
+  });
+</script>
+</body>
+</html>
