@@ -178,6 +178,17 @@
   .ad-cta .b{background:#E2D8C8;color:var(--ink);font-weight:600;font-size:13px;padding:9px 16px;border-radius:8px}
   .proof-note{margin-top:16px;font-size:14px;color:var(--ink-soft);text-align:center;font-style:italic}
 
+  /* ---------- testimonials ---------- */
+  .tst{background:var(--paper)}
+  .tst-grid{margin-top:30px;display:grid;gap:14px}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);text-align:left;display:flex;flex-direction:column}
+  .tcard .stars{color:var(--amber);font-size:14px;letter-spacing:2px;margin-bottom:10px}
+  .tcard .quote{font-size:14.5px;color:var(--ink-soft);margin-bottom:16px;flex:1}
+  .tcard .who{display:flex;align-items:center;gap:11px}
+  .tcard .av{flex:0 0 40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--ember),var(--amber));display:grid;place-items:center;color:#fff;font-weight:700;font-family:'Space Grotesk';font-size:14px}
+  .tcard .nm b{display:block;font-size:14px;font-weight:600;font-family:'Space Grotesk'}
+  .tcard .nm span{font-size:12px;color:#9A8F7E;font-family:'JetBrains Mono'}
+
   /* ---------- offer / stack ---------- */
   .offer{background:#FFF6EF}
   .stack{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
@@ -281,7 +292,7 @@
   .buybar a{background:var(--ember);color:#fff;font-weight:700;text-decoration:none;padding:13px 22px;border-radius:11px;font-family:'Space Grotesk';font-size:15px;box-shadow:0 4px 0 #B83A12}
 
   @media(min-width:560px){
-    .mech .three,.pain-list{grid-template-columns:1fr 1fr}
+    .mech .three,.pain-list,.tst-grid{grid-template-columns:1fr 1fr}
     .mech .three .mcard:last-child{grid-column:1/-1}
   }
   @media(prefers-reduced-motion:reduce){
@@ -404,6 +415,54 @@
       <div class="tl-row"><div class="tl-dot"></div><div class="tl-time">0:45</div><div class="tl-body"><h3>Tu infoproducto, creado</h3><p>La IA te entrega el producto completo, listo para subir a tu checkout.</p></div></div>
       <div class="tl-row"><div class="tl-dot"></div><div class="tl-time">1:30</div><div class="tl-body"><h3>Tus creativos, armados</h3><p>Anuncios con subtítulos y hooks automáticos, listos para subir a Meta.</p></div></div>
       <div class="tl-row"><div class="tl-dot"></div><div class="tl-time">2:30</div><div class="tl-body"><h3>Tu campaña, diagramada</h3><p>Estructura de testeo y escala lista. Tu sistema queda listo para salir a vender.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="tst">
+  <div class="wrap">
+    <p class="kicker">Lo que dicen los alumnos</p>
+    <h2 class="title">Gente común que ya armó su sistema.</h2>
+    <p class="lead">Sin promesas de hacerse rico de la noche a la mañana. Esto es lo que pasa cuando sigues el paso a paso.</p>
+    <div class="tst-grid">
+
+      <div class="tcard">
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Llevaba meses con la idea en la cabeza y nunca arrancaba. En una tarde tenía el infoproducto armado y los primeros creativos listos. No es magia, hay que seguir los pasos, pero por fin salí de la parálisis."</p>
+        <div class="who"><div class="av">MG</div><div class="nm"><b>Mariana G.</b><span>Córdoba, Argentina</span></div></div>
+      </div>
+
+      <div class="tcard">
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Lo que más me sirvió fue dejar de saltar entre Canva, CapCut y ChatGPT. Tener todo en un solo flujo me ahorró horas y, de paso, dos suscripciones que pagaba casi sin usar."</p>
+        <div class="who"><div class="av">DR</div><div class="nm"><b>Diego R.</b><span>Lima, Perú</span></div></div>
+      </div>
+
+      <div class="tcard">
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Soy cero técnica y me daba miedo la parte de la campaña de Meta. El paso a paso es claro: entendí qué cargar y por qué. Todavía estoy testeando, pero ya tengo la estructura corriendo."</p>
+        <div class="who"><div class="av">VS</div><div class="nm"><b>Valentina S.</b><span>Bogotá, Colombia</span></div></div>
+      </div>
+
+      <div class="tcard">
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Había probado con ChatGPT solo y me daba cosas genéricas. La diferencia acá son las órdenes exactas: los creativos me salieron mucho más usables. El pack de prompts lo uso casi todos los días."</p>
+        <div class="who"><div class="av">AM</div><div class="nm"><b>Andrés M.</b><span>Guadalajara, México</span></div></div>
+      </div>
+
+      <div class="tcard">
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Me trabé un poco al principio con el primer anuncio, pero volví a ver el módulo y lo resolví. Lo del anti-rechazo me salvó: antes Meta me rechazaba todo y esta vez me lo aprobaron a la primera."</p>
+        <div class="who"><div class="av">CP</div><div class="nm"><b>Carolina P.</b><span>Montevideo, Uruguay</span></div></div>
+      </div>
+
+      <div class="tcard">
+        <div class="stars">★★★★★</div>
+        <p class="quote">"No esperaba terminar el mismo día y casi lo logro; me quedó la campaña para la mañana siguiente. Para lo que cuesta, lo que te llevas es bastante más de lo que imaginas."</p>
+        <div class="who"><div class="av">ST</div><div class="nm"><b>Sebastián T.</b><span>Santiago, Chile</span></div></div>
+      </div>
+
     </div>
   </div>
 </section>
