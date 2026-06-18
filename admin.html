@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Panel Admin — Claude Express</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#17130F;--ink-soft:#3A332C;--paper:#FCFAF6;--card:#FFFFFF;--line:#E2D8C8;
+    --ember:#F2521F;--ember-hot:#FF5A2C;--amber:#FFB020;--moss:#1F6F5C;--coral-tint:#FFEDE5;
+    --shadow:0 1px 2px rgba(23,19,15,.06),0 8px 28px rgba(23,19,15,.08);--radius:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;letter-spacing:-.01em}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .wrap{max-width:880px;margin:0 auto;padding:0 18px}
+  .topbar{background:var(--ink);color:#fff;padding:14px 0}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between}
+  .brand{font-family:'Space Grotesk';font-weight:700;display:flex;align-items:center;gap:8px}
+  .spark{color:var(--ember-hot)}
+  .btn{background:var(--ember);color:#fff;border:none;border-radius:11px;font-weight:700;font-family:'Space Grotesk';font-size:15px;padding:13px 22px;cursor:pointer;transition:filter .12s,transform .06s}
+  .btn:hover{filter:brightness(1.05)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3)}
+  .btn.sec{background:var(--ink)}
+  .btn.sm{padding:9px 14px;font-size:13px}
+  .btn[disabled]{opacity:.55;cursor:not-allowed}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-top:18px}
+  .card h2{font-size:19px;margin-bottom:4px}
+  .card .sub{color:var(--ink-soft);font-size:13.5px;margin-bottom:16px}
+  label{display:block;font-weight:600;font-size:13.5px;margin:14px 0 6px}
+  label .hint{font-weight:400;color:var(--ink-soft);font-size:12px}
+  input[type=text],input[type=password],input[type=url],select,textarea{
+    width:100%;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;background:#fff;color:var(--ink)
+  }
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--coral-tint);border-color:var(--ember)}
+  textarea{resize:vertical;min-height:64px;font-family:'JetBrains Mono';font-size:13px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.row{grid-template-columns:1fr}}
+  .toggle{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:14px;font-weight:600}
+  .toggle input{width:42px;height:24px;appearance:none;background:var(--line);border-radius:999px;position:relative;cursor:pointer;transition:.2s;flex:0 0 auto}
+  .toggle input:checked{background:var(--moss)}
+  .toggle input::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.2s}
+  .toggle input:checked::after{left:20px}
+  .sectitle{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ember);margin:22px 0 4px;font-weight:500}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;align-items:center}
+  .msg{font-size:13.5px;font-weight:600;padding:6px 0}
+  .msg.ok{color:var(--moss)}.msg.err{color:var(--ember)}
+  /* login */
+  .login{max-width:380px;margin:60px auto;text-align:center}
+  .login .card{text-align:left}
+  .hidden{display:none!important}
+  /* stats */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media(max-width:680px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+  .kpi .n{font-family:'Space Grotesk';font-weight:700;font-size:28px;line-height:1}
+  .kpi .l{font-size:12px;color:var(--ink-soft);margin-top:6px}
+  .kpi .s{font-size:11px;color:var(--moss);margin-top:3px;font-weight:600}
+  .chart{display:flex;align-items:flex-end;gap:4px;height:140px;margin-top:14px;border-bottom:1px solid var(--line);padding-bottom:2px;overflow-x:auto}
+  .chart .col{flex:1 0 14px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:2px;min-width:14px}
+  .chart .bar{width:100%;background:var(--coral-tint);border-radius:4px 4px 0 0;position:relative;display:flex;flex-direction:column;justify-content:flex-end}
+  .chart .bar .v{background:var(--ember);border-radius:4px 4px 0 0;width:100%}
+  .chart .col .d{font-size:9px;color:var(--ink-soft);transform:rotate(-45deg);white-space:nowrap;margin-top:4px;height:20px}
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--ink-soft);margin-top:14px}
+  .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft)}
+  .tag{display:inline-block;font-family:'JetBrains Mono';font-size:11px;padding:2px 7px;border-radius:6px}
+  .tag.pv{background:#EEF6F2;color:var(--moss)}
+  .tag.atc{background:var(--coral-tint);color:var(--ember)}
+  .pill{font-family:'JetBrains Mono';font-size:11px;background:var(--coral-tint);color:var(--ember);padding:3px 9px;border-radius:6px}
+  .muted{color:var(--ink-soft);font-size:13px}
+  .toprow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="spark">✦</span> Claude Express · Admin</div>
+    <button class="btn ghost sm hidden" id="logoutBtn">Salir</button>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="login" id="loginView">
+  <div class="card">
+    <h2>Iniciar sesión</h2>
+    <p class="sub">Ingresá la contraseña del panel.</p>
+    <label>Contraseña</label>
+    <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" />
+    <div class="actions">
+      <button class="btn" id="loginBtn">Entrar</button>
+      <span class="msg" id="loginMsg"></span>
+    </div>
+  </div>
+</div>
+
+<!-- PANEL -->
+<div class="wrap hidden" id="panel" style="padding-bottom:60px">
+
+  <!-- CONFIG -->
+  <div class="card">
+    <div class="toprow">
+      <div><h2>Configuración de la página</h2><p class="sub" style="margin:0">VSL, link de Hotmart, precio y Meta (Pixel + CAPI).</p></div>
+    </div>
+
+    <div class="sectitle">VSL — Video de ventas</div>
+    <label>URL del video <span class="hint">YouTube, Vimeo, .mp4 o un embed. Dejalo vacío para ocultar el video.</span></label>
+    <input type="url" id="vsl_url" placeholder="https://www.youtube.com/watch?v=..." />
+    <label>Tipo <span class="hint">Dejá "Automático" salvo que uses un embed especial.</span></label>
+    <select id="vsl_type">
+      <option value="auto">Automático (detectar)</option>
+      <option value="youtube">YouTube</option>
+      <option value="vimeo">Vimeo</option>
+      <option value="mp4">Archivo .mp4</option>
+      <option value="iframe">Embed / iframe</option>
+    </select>
+
+    <div class="sectitle">Checkout — Hotmart</div>
+    <label>Link de Hotmart <span class="hint">Se usa LIMPIO, sin agregarle nada (no se pierde info de Hotmart).</span></label>
+    <input type="url" id="hotmart_url" placeholder="https://pay.hotmart.com/XXXXXXXX" />
+
+    <div class="sectitle">Precio (texto que se muestra)</div>
+    <div class="row">
+      <div><label>Precio actual</label><input type="text" id="price" placeholder="US$ 19" /></div>
+      <div><label>Precio tachado</label><input type="text" id="price_original" placeholder="US$ 97" /></div>
+    </div>
+
+    <div class="sectitle">Meta — Pixel & CAPI</div>
+    <div class="row">
+      <div><label>Pixel ID</label><input type="text" id="meta_pixel_id" placeholder="1234567890" class="mono" /></div>
+      <div><label>Test Event Code <span class="hint">opcional</span></label><input type="text" id="meta_test_event_code" placeholder="TEST12345" class="mono" /></div>
+    </div>
+    <label>Token de CAPI (Conversions API) <span class="hint">Secreto. Solo se usa del lado del servidor.</span></label>
+    <textarea id="meta_capi_token" placeholder="EAAB..."></textarea>
+    <div class="toggle"><input type="checkbox" id="pixel_enabled" /> <label for="pixel_enabled" style="margin:0">Activar Pixel (navegador) — PageView + AddToCart</label></div>
+    <div class="toggle"><input type="checkbox" id="capi_enabled" /> <label for="capi_enabled" style="margin:0">Activar CAPI (servidor) — PageView + AddToCart</label></div>
+
+    <div class="actions">
+      <button class="btn" id="saveBtn">Guardar cambios</button>
+      <a class="btn sec sm" id="viewSite" href="/" target="_blank">Ver la página ↗</a>
+      <span class="msg" id="saveMsg"></span>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="card">
+    <div class="toprow">
+      <div><h2>Estadísticas</h2><p class="sub" style="margin:0">Visitas y clicks en el CTA.</p></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="range" style="width:auto">
+          <option value="7">Últimos 7 días</option>
+          <option value="30" selected>Últimos 30 días</option>
+          <option value="90">Últimos 90 días</option>
+        </select>
+        <button class="btn sec sm" id="refreshBtn">Actualizar</button>
+      </div>
+    </div>
+
+    <div class="kpis" style="margin-top:16px">
+      <div class="kpi"><div class="n" id="kViews">—</div><div class="l">Visitas (PageView)</div><div class="s" id="kViewsToday"></div></div>
+      <div class="kpi"><div class="n" id="kClicks">—</div><div class="l">Clicks CTA (AddToCart)</div><div class="s" id="kClicksToday"></div></div>
+      <div class="kpi"><div class="n" id="kCtr">—</div><div class="l">Tasa de click (CTR)</div></div>
+      <div class="kpi"><div class="n" id="kSessions">—</div><div class="l">Sesiones únicas</div><div class="s" id="kCapi"></div></div>
+    </div>
+
+    <div class="legend"><span><i style="background:var(--ember)"></i>Visitas</span><span><i style="background:var(--coral-tint)"></i>Clicks CTA</span></div>
+    <div class="chart" id="chart"></div>
+
+    <div class="row" style="margin-top:22px;align-items:start">
+      <div>
+        <h3 style="font-size:15px;margin-bottom:4px">Por país (visitas)</h3>
+        <table id="countryTable"><tbody><tr><td class="muted">—</td></tr></tbody></table>
+      </div>
+      <div>
+        <h3 style="font-size:15px;margin-bottom:4px">Actividad reciente</h3>
+        <table id="recentTable"><tbody><tr><td class="muted">—</td></tr></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASSWORD -->
+  <div class="card">
+    <h2>Cambiar contraseña</h2>
+    <p class="sub">Cambiá la contraseña por defecto cuanto antes.</p>
+    <div class="row">
+      <div><label>Nueva contraseña</label><input type="password" id="np1" placeholder="mín. 6 caracteres" autocomplete="new-password" /></div>
+      <div><label>Repetir</label><input type="password" id="np2" placeholder="repetir" autocomplete="new-password" /></div>
+    </div>
+    <div class="actions">
+      <button class="btn sec" id="pwBtn">Actualizar contraseña</button>
+      <span class="msg" id="pwMsg"></span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const LP_API = 'https://yopxitmcirrcvrvltfai.supabase.co/functions/v1/lp-api';
+const LP_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvcHhpdG1jaXJyY3Zydmx0ZmFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MzUwMzksImV4cCI6MjA5NTAxMTAzOX0.5iwp6EcFAnl2L1_Mb4ZdGUQP71wpui7Wfjderst2Rqk';
+let PASS = sessionStorage.getItem('lp_admin_pass') || '';
+
+function api(action, body){
+  return fetch(LP_API, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','apikey':LP_ANON,'Authorization':'Bearer '+LP_ANON},
+    body: JSON.stringify(Object.assign({action:action}, body||{}))
+  }).then(function(r){ return r.json().then(function(j){ return {status:r.status, body:j}; }); });
+}
+function $(id){ return document.getElementById(id); }
+function show(el){ el.classList.remove('hidden'); }
+function hide(el){ el.classList.add('hidden'); }
+function msg(el, text, ok){ el.textContent=text; el.className='msg '+(ok?'ok':'err'); }
+
+const FIELDS = ['vsl_url','vsl_type','hotmart_url','price','price_original','meta_pixel_id','meta_test_event_code','meta_capi_token'];
+const BOOLS  = ['pixel_enabled','capi_enabled'];
+
+function fillForm(c){
+  FIELDS.forEach(function(k){ if($(k)) $(k).value = c[k] || ''; });
+  BOOLS.forEach(function(k){ if($(k)) $(k).checked = !!c[k]; });
+}
+function readForm(){
+  var c = {};
+  FIELDS.forEach(function(k){ c[k] = $(k).value.trim(); });
+  BOOLS.forEach(function(k){ c[k] = $(k).checked; });
+  return c;
+}
+
+/* ---- login ---- */
+function doLogin(pass){
+  msg($('loginMsg'),'Verificando…', true);
+  return api('admin_login', {password:pass}).then(function(res){
+    if(res.body && res.body.ok){
+      PASS = pass; sessionStorage.setItem('lp_admin_pass', pass);
+      fillForm(res.body.config||{});
+      hide($('loginView')); show($('panel')); show($('logoutBtn'));
+      msg($('loginMsg'),'', true);
+      loadStats();
+    } else {
+      msg($('loginMsg'), 'Contraseña incorrecta.', false);
+      PASS=''; sessionStorage.removeItem('lp_admin_pass');
+    }
+  }).catch(function(){ msg($('loginMsg'),'Error de conexión.', false); });
+}
+$('loginBtn').addEventListener('click', function(){ doLogin($('loginPass').value); });
+$('loginPass').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin($('loginPass').value); });
+$('logoutBtn').addEventListener('click', function(){ PASS=''; sessionStorage.removeItem('lp_admin_pass'); location.reload(); });
+
+/* ---- save config ---- */
+$('saveBtn').addEventListener('click', function(){
+  var btn=this; btn.disabled=true; msg($('saveMsg'),'Guardando…', true);
+  api('save_config', {password:PASS, config:readForm()}).then(function(res){
+    btn.disabled=false;
+    if(res.body && res.body.ok){ fillForm(res.body.config||{}); msg($('saveMsg'),'✓ Guardado.', true); }
+    else { msg($('saveMsg'), res.body && res.body.error ? ('Error: '+res.body.error) : 'No se pudo guardar.', false); }
+  }).catch(function(){ btn.disabled=false; msg($('saveMsg'),'Error de conexión.', false); });
+});
+
+/* ---- change password ---- */
+$('pwBtn').addEventListener('click', function(){
+  var a=$('np1').value, b=$('np2').value;
+  if(a.length<6){ msg($('pwMsg'),'Mínimo 6 caracteres.', false); return; }
+  if(a!==b){ msg($('pwMsg'),'No coinciden.', false); return; }
+  var btn=this; btn.disabled=true; msg($('pwMsg'),'Actualizando…', true);
+  api('change_password', {password:PASS, new_password:a}).then(function(res){
+    btn.disabled=false;
+    if(res.body && res.body.ok){
+      PASS=a; sessionStorage.setItem('lp_admin_pass', a);
+      $('np1').value=''; $('np2').value=''; msg($('pwMsg'),'✓ Contraseña actualizada.', true);
+    } else { msg($('pwMsg'), res.body && res.body.error ? ('Error: '+res.body.error) : 'No se pudo.', false); }
+  }).catch(function(){ btn.disabled=false; msg($('pwMsg'),'Error de conexión.', false); });
+});
+
+/* ---- stats ---- */
+$('refreshBtn').addEventListener('click', loadStats);
+$('range').addEventListener('change', loadStats);
+
+function loadStats(){
+  api('stats', {password:PASS, days:$('range').value}).then(function(res){
+    if(!(res.body && res.body.ok)) return;
+    renderStats(res.body.stats);
+  }).catch(function(){});
+}
+
+function renderStats(s){
+  s = s || {};
+  $('kViews').textContent = (s.total_views||0).toLocaleString();
+  $('kClicks').textContent = (s.total_clicks||0).toLocaleString();
+  $('kSessions').textContent = (s.unique_sessions||0).toLocaleString();
+  var ctr = s.total_views ? ((s.total_clicks/s.total_views)*100) : 0;
+  $('kCtr').textContent = ctr.toFixed(1)+'%';
+  $('kViewsToday').textContent = 'Hoy: '+(s.views_today||0);
+  $('kClicksToday').textContent = 'Hoy: '+(s.clicks_today||0);
+  $('kCapi').textContent = 'CAPI: '+(s.capi_sent||0);
+
+  // chart
+  var daily = s.daily || [];
+  var max = 1; daily.forEach(function(d){ max=Math.max(max, d.views||0); });
+  var chart=$('chart'); chart.innerHTML='';
+  if(!daily.length){ chart.innerHTML='<div class="muted" style="margin:auto">Sin datos todavía.</div>'; }
+  daily.forEach(function(d){
+    var col=document.createElement('div'); col.className='col';
+    var h=Math.round(((d.views||0)/max)*110)+2;
+    var ch=Math.round(((d.clicks||0)/Math.max(max,1))*110);
+    col.innerHTML='<div class="bar" title="'+d.d+' · '+(d.views||0)+' visitas, '+(d.clicks||0)+' clicks" style="height:'+h+'px"><div class="v" style="height:'+ch+'px"></div></div><div class="d">'+d.d.slice(5)+'</div>';
+    chart.appendChild(col);
+  });
+
+  // country
+  var ct=$('countryTable').querySelector('tbody'); ct.innerHTML='';
+  (s.by_country||[]).forEach(function(c){
+    ct.innerHTML += '<tr><td>'+flag(c.country)+' '+c.country+'</td><td style="text-align:right"><span class="pill">'+c.n+'</span></td></tr>';
+  });
+  if(!(s.by_country||[]).length) ct.innerHTML='<tr><td class="muted">Sin datos.</td></tr>';
+
+  // recent
+  var rt=$('recentTable').querySelector('tbody'); rt.innerHTML='';
+  (s.recent||[]).forEach(function(r){
+    var t = r.type==='add_to_cart' ? '<span class="tag atc">AddToCart</span>' : '<span class="tag pv">PageView</span>';
+    var when = new Date(r.created_at).toLocaleString();
+    rt.innerHTML += '<tr><td>'+t+'</td><td class="muted">'+(r.country||'??')+'</td><td class="muted" style="font-size:11px">'+when+'</td></tr>';
+  });
+  if(!(s.recent||[]).length) rt.innerHTML='<tr><td class="muted">Sin actividad.</td></tr>';
+}
+
+function flag(cc){
+  if(!cc || cc.length!==2) return '🌎';
+  try{ return String.fromCodePoint.apply(null, cc.toUpperCase().split('').map(function(c){return 127397+c.charCodeAt(0);})); }catch(e){ return '🌎'; }
+}
+
+/* ---- auto-login si hay sesión guardada ---- */
+if(PASS){ doLogin(PASS); }
+</script>
+</body>
+</html>
