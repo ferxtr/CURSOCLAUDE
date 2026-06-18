@@ -641,18 +641,41 @@ function recalc(){
   if(barTotal) barTotal.textContent = txt;
 }
 
-/* ---- buy button: dispara AddToCart (Pixel + CAPI) y va a Hotmart LIMPIO ---- */
+/* ---- buy button: dispara AddToCart (Pixel + CAPI) y va a Hotmart
+       reenviando el rastro de Meta para que Hotmart atribuya y dispare el Purchase ---- */
 document.getElementById('buyBtn').addEventListener('click', function(e){
   e.preventDefault();
   const atcId = lpUuid();
   if(PIXEL_ON && window.fbq) fbq('track','AddToCart',{},{eventID:atcId});
   lpTrack('add_to_cart', atcId);
-  // Redirige al checkout de Hotmart SIN agregar parámetros (no se pierde info de Hotmart)
+  const dest = lpBuildCheckoutUrl(HOTMART_URL);
   setTimeout(function(){
-    if(HOTMART_URL){ window.location.href = HOTMART_URL; }
+    if(dest){ window.location.href = dest; }
     else { alert('Falta configurar el link de Hotmart en el panel /admin'); }
   }, 300);
 });
+
+/* Construye la URL de Hotmart preservando lo que ya trae el link y AGREGANDO
+   el rastro de Meta: todos los query params entrantes (fbclid, utm_*, gclid, etc.)
+   + las cookies _fbp y _fbc. Si no existe la cookie _fbc pero llegó fbclid, la reconstruye.
+   Así Hotmart puede atribuir la venta y disparar el Purchase del Pixel. */
+function lpBuildCheckoutUrl(base){
+  if(!base) return '';
+  try{
+    var u = new URL(base);
+    var incoming = new URLSearchParams(location.search);
+    // 1) reenvía todo lo entrante sin pisar lo que ya trae el link de Hotmart
+    incoming.forEach(function(v,k){ if(v && !u.searchParams.has(k)) u.searchParams.set(k, v); });
+    // 2) cookies de Meta para el match del Pixel/CAPI en Hotmart
+    var fbp = lpCookie('_fbp');
+    var fbc = lpCookie('_fbc');
+    var fbclid = incoming.get('fbclid');
+    if(!fbc && fbclid) fbc = 'fb.1.' + Date.now() + '.' + fbclid; // reconstruye _fbc si no está la cookie
+    if(fbp && !u.searchParams.has('_fbp')) u.searchParams.set('_fbp', fbp);
+    if(fbc && !u.searchParams.has('_fbc')) u.searchParams.set('_fbc', fbc);
+    return u.toString();
+  }catch(e){ return base; }
+}
 
 /* ---- contador de cupos (persistente, con fallback en memoria) ---- */
 (function(){
