@@ -641,18 +641,14 @@ function recalc(){
   if(barTotal) barTotal.textContent = txt;
 }
 
-/* ---- buy button: dispara AddToCart (Pixel + CAPI) y va a Hotmart
-       reenviando el rastro de Meta para que Hotmart atribuya y dispare el Purchase ---- */
+/* ---- buy button: va a Hotmart reenviando el rastro de Meta (fbclid, _fbp, _fbc, utm_*)
+       para que Hotmart atribuya y dispare el Purchase.
+       NO disparamos AddToCart aquí: lo maneja Hotmart en su checkout (evita duplicado). ---- */
 document.getElementById('buyBtn').addEventListener('click', function(e){
   e.preventDefault();
-  const atcId = lpUuid();
-  if(PIXEL_ON && window.fbq) fbq('track','AddToCart',{},{eventID:atcId});
-  lpTrack('add_to_cart', atcId);
   const dest = lpBuildCheckoutUrl(HOTMART_URL);
-  setTimeout(function(){
-    if(dest){ window.location.href = dest; }
-    else { alert('Falta configurar el link de Hotmart en el panel /admin'); }
-  }, 300);
+  if(dest){ window.location.href = dest; }
+  else { alert('Falta configurar el link de Hotmart en el panel /admin'); }
 });
 
 /* Construye la URL de Hotmart preservando lo que ya trae el link y AGREGANDO
