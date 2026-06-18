@@ -125,8 +125,14 @@
     </select>
 
     <div class="sectitle">Checkout — Hotmart</div>
-    <label>Link de Hotmart <span class="hint">Se usa LIMPIO, sin agregarle nada (no se pierde info de Hotmart).</span></label>
+    <label>Link de Hotmart <span class="hint">Al comprar se le reenvía el rastro de Meta (fbclid, _fbp, _fbc, utm_*) preservando lo que ya trae el link.</span></label>
     <input type="url" id="hotmart_url" placeholder="https://pay.hotmart.com/XXXXXXXX" />
+
+    <div class="sectitle">Hotmart Webhook → Purchase (CAPI)</div>
+    <label>URL del webhook <span class="hint">Pegala en Hotmart → Herramientas → Webhook. Versión 2.0.0 · Evento: "Compra aprobada".</span></label>
+    <input type="text" id="webhook_url" class="mono" readonly onclick="this.select()" value="https://yopxitmcirrcvrvltfai.supabase.co/functions/v1/hotmart-webhook" />
+    <label>Hottok <span class="hint">Token que te da Hotmart al crear el webhook (pestaña Autenticación). Secreto.</span></label>
+    <input type="text" id="hotmart_hottok" class="mono" placeholder="hottok de Hotmart" />
 
     <div class="sectitle">Precio (texto que se muestra)</div>
     <div class="row">
@@ -220,7 +226,7 @@ function show(el){ el.classList.remove('hidden'); }
 function hide(el){ el.classList.add('hidden'); }
 function msg(el, text, ok){ el.textContent=text; el.className='msg '+(ok?'ok':'err'); }
 
-const FIELDS = ['vsl_url','vsl_type','hotmart_url','price','price_original','meta_pixel_id','meta_test_event_code','meta_capi_token'];
+const FIELDS = ['vsl_url','vsl_type','hotmart_url','price','price_original','meta_pixel_id','meta_test_event_code','meta_capi_token','hotmart_hottok'];
 const BOOLS  = ['pixel_enabled','capi_enabled'];
 
 function fillForm(c){
