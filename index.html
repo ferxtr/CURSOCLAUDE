@@ -215,6 +215,17 @@
   .bump .info .price .was{text-decoration:line-through;opacity:.5;margin-right:7px}
   .bump .info .price b{display:inline;color:var(--ember);font-weight:700;font-size:15px;font-family:'Space Grotesk'}
 
+  /* ---------- BONOS incluidos (no interactivos) ---------- */
+  .bono{display:flex;gap:13px;padding:16px 18px;border-bottom:1px dashed var(--line);background:#F1F7F4;position:relative}
+  .bono .box{flex:0 0 24px;height:24px;border-radius:6px;display:grid;place-items:center;margin-top:2px;background:var(--moss)}
+  .bono .box svg{width:15px;height:15px}
+  .bono .info .flag{display:inline-block;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.04em;background:var(--moss);color:#fff;padding:3px 8px;border-radius:6px;margin-bottom:7px}
+  .bono .info b{display:block;font-size:15px;margin-bottom:4px;line-height:1.3}
+  .bono .info p{font-size:13.5px;color:var(--ink-soft);margin-bottom:7px}
+  .bono .info .price{font-family:'JetBrains Mono';font-size:14px}
+  .bono .info .price .was{text-decoration:line-through;opacity:.5;margin-right:7px}
+  .bono .info .price b{display:inline;color:var(--moss);font-weight:700;font-size:15px;font-family:'Space Grotesk'}
+
   .co-total{padding:18px;display:flex;justify-content:space-between;align-items:center;background:#FFF6EF}
   .co-total .lbl{font-size:14px;color:var(--ink-soft)}
   .co-total .amt{font-family:'Space Grotesk';font-weight:700;font-size:30px}
@@ -426,7 +437,9 @@
       <div class="stack-row"><div class="l"><b>Módulo 2 — Tu infoproducto de cero</b><span>Del ebook a los bonos, listo para entregar</span></div><div class="v">US$ 47</div></div>
       <div class="stack-row"><div class="l"><b>Módulo 3 — Campañas de Meta</b><span>Estructura de testeo + escala con IA</span></div><div class="v">US$ 47</div></div>
       <div class="stack-row"><div class="l"><b>Acceso de por vida + actualizaciones</b><span>Las herramientas de IA cambian; el curso también</span></div><div class="v">US$ 30</div></div>
-      <div class="stack-total"><span class="tl-lbl">Valor real</span><span class="tl-val"><span class="strike">US$ 171</span> &nbsp;<span class="js-price">US$ 19</span></span></div>
+      <div class="stack-row"><div class="l"><b>🎁 Bono 1 — Pack de 50 Prompts Maestros</b><span>Órdenes listas para copiar y pegar</span></div><div class="v"><span class="strike">US$ 27</span> GRATIS</div></div>
+      <div class="stack-row"><div class="l"><b>🎁 Bono 2 — Anti-rechazo de Meta</b><span>Tus anuncios aprobados a la primera</span></div><div class="v"><span class="strike">US$ 57</span> GRATIS</div></div>
+      <div class="stack-total"><span class="tl-lbl">Valor real</span><span class="tl-val"><span class="strike">US$ 255</span> &nbsp;<span class="js-price">US$ 19</span></span></div>
     </div>
   </div>
 </section>
@@ -435,8 +448,8 @@
 <section class="bumps" id="comprar">
   <div class="wrap">
     <p class="kicker">Completa tu pedido</p>
-    <h2 class="title">Arma tu sistema completo.</h2>
-    <p class="lead">Suma los atajos opcionales y ten todo resuelto desde el primer día.</p>
+    <h2 class="title">Todo incluido. Sin extras que pagar.</h2>
+    <p class="lead">Tu compra incluye el curso completo <b>más 2 bonos de regalo</b> — sin costo adicional.</p>
 
     <div class="checkout-card">
       <div class="co-head"><span class="spark" style="color:#fff">✦</span> Tu pedido</div>
@@ -446,25 +459,25 @@
         <div class="pr"><span class="strike js-price-was">US$ 97</span> &nbsp;<b class="js-price">US$ 19</b></div>
       </div>
 
-      <!-- ORDER BUMP 1 -->
-      <div class="bump" data-price="7" role="checkbox" aria-checked="false" tabindex="0">
+      <!-- BONO 1 (incluido) -->
+      <div class="bono">
         <div class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="info">
-          <span class="flag">Sí, lo quiero — recomendado</span>
+          <span class="flag">🎁 Bono incluido</span>
           <b>Pack de 50 Prompts Maestros</b>
           <p>Las órdenes exactas para copiar y pegar. Pegas el prompt y la IA genera el creativo, el infoproducto o la campaña. Cero página en blanco.</p>
-          <span class="price"><span class="was">US$ 27</span> <b>+ US$ 7</b></span>
+          <span class="price"><span class="was">US$ 27</span> <b>GRATIS</b></span>
         </div>
       </div>
 
-      <!-- ORDER BUMP 2 -->
-      <div class="bump" data-price="17" role="checkbox" aria-checked="false" tabindex="0">
+      <!-- BONO 2 (incluido) -->
+      <div class="bono">
         <div class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="info">
-          <span class="flag">Lo que casi nadie te dice</span>
+          <span class="flag">🎁 Bono incluido</span>
           <b>Anti-rechazo: tus anuncios aprobados por Meta a la primera</b>
           <p>Un solo error de redacción y Meta te rechaza el anuncio o te frena la cuenta. Te damos las fórmulas exactas para que tus creativos pasen la revisión a la primera y no pierdas ni un día. El seguro de todo tu negocio.</p>
-          <span class="price"><span class="was">US$ 57</span> <b>+ US$ 17</b></span>
+          <span class="price"><span class="was">US$ 57</span> <b>GRATIS</b></span>
         </div>
       </div>
 
@@ -559,7 +572,7 @@ const LP_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 let BASE_PRICE = 19;       // se sobrescribe con el precio del panel
 let HOTMART_URL = '';      // se carga del panel (se usa LIMPIO, sin params)
 let PIXEL_ON = false;
-/* los bumps leen data-price en el HTML: 7 y 17 */
+/* precio único: los 2 bonos van incluidos gratis (sin sumar al total) */
 
 document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -579,26 +592,14 @@ document.getElementById('year').textContent = new Date().getFullYear();
   })();
 })();
 
-/* ---- order bumps + total en vivo ---- */
-const bumps = document.querySelectorAll('.bump');
+/* ---- total (precio único; los bonos van incluidos gratis) ---- */
 const totalEl = document.getElementById('total');
 const barTotal = document.getElementById('barTotal');
-function fmt(n){ return 'US$ ' + n; }
 function recalc(){
-  let t = BASE_PRICE;
-  bumps.forEach(b=>{ if(b.classList.contains('on')) t += parseInt(b.dataset.price,10); });
-  totalEl.textContent = fmt(t);
-  barTotal.textContent = fmt(t);
+  const txt = (document.querySelector('.js-price') && document.querySelector('.js-price').textContent) || ('US$ ' + BASE_PRICE);
+  if(totalEl) totalEl.textContent = txt;
+  if(barTotal) barTotal.textContent = txt;
 }
-bumps.forEach(b=>{
-  function toggle(){
-    b.classList.toggle('on');
-    b.setAttribute('aria-checked', b.classList.contains('on'));
-    recalc();
-  }
-  b.addEventListener('click', toggle);
-  b.addEventListener('keydown', e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); toggle(); } });
-});
 
 /* ---- buy button: dispara AddToCart (Pixel + CAPI) y va a Hotmart LIMPIO ---- */
 document.getElementById('buyBtn').addEventListener('click', function(e){
