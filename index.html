@@ -732,17 +732,26 @@ function lpInitPixel(id){
 function lpRenderVsl(url, type){
   if(!url) return;
   var sec=document.getElementById('vslSection'), frame=document.getElementById('vslFrame');
-  var html='', yt, vm;
+  var html='';
   type=(type||'auto').toLowerCase();
-  if(type==='youtube' || (type==='auto' && (yt=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/)))){
-    var id = yt ? yt[1] : (url.match(/[\w-]{6,}/)||[''])[0];
-    html='<iframe src="https://www.youtube.com/embed/'+id+'?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-  } else if(type==='vimeo' || (type==='auto' && (vm=url.match(/vimeo\.com\/(?:video\/)?(\d+)/)))){
-    var vid = vm ? vm[1] : (url.match(/\d+/)||[''])[0];
-    html='<iframe src="https://player.vimeo.com/video/'+vid+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+  // Detecta SIEMPRE el ID (aunque el tipo esté mal configurado en el panel).
+  // Soporta youtu.be, watch?v=, /v/, /embed/, /shorts/ y /live/.
+  var yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|v\/|embed\/|shorts\/|live\/))([\w-]{6,})/);
+  var vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  function ytEmbed(id){ return '<iframe src="https://www.youtube.com/embed/'+id+'?rel=0&modestbranding=1&playsinline=1" title="VSL" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'; }
+  function vmEmbed(id){ return '<iframe src="https://player.vimeo.com/video/'+id+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>'; }
+
+  if(type==='youtube'){
+    html = ytEmbed(yt ? yt[1] : (url.match(/[\w-]{6,}/)||[''])[0]);
+  } else if(type==='vimeo'){
+    html = vmEmbed(vm ? vm[1] : (url.match(/\d+/)||[''])[0]);
   } else if(type==='mp4' || (type==='auto' && /\.mp4(\?|$)/i.test(url))){
     html='<video controls playsinline preload="metadata" src="'+url+'"></video>';
-  } else {
+  } else if(yt){            // auto / cualquier otro tipo: es un link de YouTube
+    html = ytEmbed(yt[1]);
+  } else if(vm){            // auto: es un link de Vimeo
+    html = vmEmbed(vm[1]);
+  } else {                  // último recurso: embeber la URL tal cual
     html='<iframe src="'+url+'" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
   }
   frame.innerHTML=html; sec.hidden=false;
