@@ -120,6 +120,13 @@
   .arrowto{color:var(--ember-hot);font-size:22px;font-weight:700;margin:6px 0}
   .one{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(90deg,var(--ember),#FF7A4D);color:#fff;font-weight:700;font-size:16px;padding:11px 20px;border-radius:11px;font-family:'Space Grotesk'}
 
+  /* ---------- VSL ---------- */
+  .vsl{background:var(--paper);padding:42px 0 8px}
+  .vsl .head{text-align:center;margin-bottom:18px}
+  .vsl .frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;background:#000;box-shadow:var(--shadow);border:1px solid var(--line)}
+  .vsl .frame iframe,.vsl .frame video{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+  .vsl .vcta{margin-top:18px}
+
   /* ---------- section base ---------- */
   section{padding:54px 0}
   .kicker{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.06em;color:var(--ember);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
@@ -317,6 +324,20 @@
   </div>
 </div>
 
+<!-- VSL (se muestra solo si hay video cargado en el admin) -->
+<section class="vsl" id="vslSection" hidden>
+  <div class="wrap">
+    <div class="head">
+      <p class="kicker" style="justify-content:center">Míralo en acción</p>
+      <h2 class="title">Mira cómo se arma todo en minutos.</h2>
+    </div>
+    <div class="frame" id="vslFrame"></div>
+    <div class="cta-row vcta">
+      <a href="#comprar" class="cta">Quiero armar mi sistema <span class="sm">Acceso inmediato · Empieza hoy mismo</span></a>
+    </div>
+  </div>
+</section>
+
 <!-- PAIN -->
 <section class="pain">
   <div class="wrap">
@@ -405,7 +426,7 @@
       <div class="stack-row"><div class="l"><b>Módulo 2 — Tu infoproducto de cero</b><span>Del ebook a los bonos, listo para entregar</span></div><div class="v">US$ 47</div></div>
       <div class="stack-row"><div class="l"><b>Módulo 3 — Campañas de Meta</b><span>Estructura de testeo + escala con IA</span></div><div class="v">US$ 47</div></div>
       <div class="stack-row"><div class="l"><b>Acceso de por vida + actualizaciones</b><span>Las herramientas de IA cambian; el curso también</span></div><div class="v">US$ 30</div></div>
-      <div class="stack-total"><span class="tl-lbl">Valor real</span><span class="tl-val"><span class="strike">US$ 171</span> &nbsp;US$ 19</span></div>
+      <div class="stack-total"><span class="tl-lbl">Valor real</span><span class="tl-val"><span class="strike">US$ 171</span> &nbsp;<span class="js-price">US$ 19</span></span></div>
     </div>
   </div>
 </section>
@@ -422,7 +443,7 @@
 
       <div class="co-base">
         <div class="nm"><b>Claude Express — Curso completo</b><span>3 módulos · acceso de por vida</span></div>
-        <div class="pr"><span class="strike">US$ 97</span> &nbsp;<b>US$ 19</b></div>
+        <div class="pr"><span class="strike js-price-was">US$ 97</span> &nbsp;<b class="js-price">US$ 19</b></div>
       </div>
 
       <!-- ORDER BUMP 1 -->
@@ -477,12 +498,12 @@
 <section class="urgency">
   <div class="wrap">
     <p class="kicker" style="justify-content:center;color:#FFC9B5">Precio de lanzamiento</p>
-    <h2 class="title">Quedan <span id="cuposNum">37</span> cupos a US$ 19</h2>
+    <h2 class="title">Quedan <span id="cuposNum">37</span> cupos a <span class="js-price">US$ 19</span></h2>
     <div class="cupos" id="cuposBig">37 / 50</div>
     <div class="bar"><i id="cuposBar" style="width:74%"></i></div>
-    <p>Cuando se completan los cupos, el precio vuelve a US$ 97.</p>
+    <p>Cuando se completan los cupos, el precio vuelve a <span class="js-price-was">US$ 97</span>.</p>
     <div class="cta-row" style="margin-top:24px;align-items:center">
-      <a href="#comprar" class="cta" style="max-width:420px">Tomar mi cupo a US$ 19</a>
+      <a href="#comprar" class="cta" style="max-width:420px">Tomar mi cupo a <span class="js-price">US$ 19</span></a>
     </div>
   </div>
 </section>
@@ -512,7 +533,7 @@
     <h2 class="title">El sistema ya funcionó contigo. Ahora hazlo tuyo.</h2>
     <p>Este anuncio te trajo hasta aquí. Imagina lo que puedes hacer cuando seas tú quien los crea.</p>
     <div class="cta-row">
-      <a href="#comprar" class="cta" style="max-width:420px">Empezar ahora a US$ 19 <span class="sm">Acceso inmediato · Garantía de 7 días</span></a>
+      <a href="#comprar" class="cta" style="max-width:420px">Empezar ahora a <span class="js-price">US$ 19</span> <span class="sm">Acceso inmediato · Garantía de 7 días</span></a>
     </div>
   </div>
 </section>
@@ -532,8 +553,12 @@
 </div>
 
 <script>
-/* ===== PRECIOS (edita aquí) ===== */
-const BASE_PRICE = 19;     // curso principal
+/* ===== Config Supabase (los precios y todo lo demás se cargan del panel /admin) ===== */
+const LP_API = 'https://yopxitmcirrcvrvltfai.supabase.co/functions/v1/lp-api';
+const LP_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvcHhpdG1jaXJyY3Zydmx0ZmFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MzUwMzksImV4cCI6MjA5NTAxMTAzOX0.5iwp6EcFAnl2L1_Mb4ZdGUQP71wpui7Wfjderst2Rqk';
+let BASE_PRICE = 19;       // se sobrescribe con el precio del panel
+let HOTMART_URL = '';      // se carga del panel (se usa LIMPIO, sin params)
+let PIXEL_ON = false;
 /* los bumps leen data-price en el HTML: 7 y 17 */
 
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -575,14 +600,17 @@ bumps.forEach(b=>{
   b.addEventListener('keydown', e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); toggle(); } });
 });
 
-/* ---- buy button: arma el link a Hotmart con los bumps elegidos ---- */
+/* ---- buy button: dispara AddToCart (Pixel + CAPI) y va a Hotmart LIMPIO ---- */
 document.getElementById('buyBtn').addEventListener('click', function(e){
   e.preventDefault();
-  const chosen = [];
-  bumps.forEach(b=>{ if(b.classList.contains('on')) chosen.push(b.querySelector('.info b').textContent); });
-  /* ▼▼ REEMPLAZA por tu link real de checkout de Hotmart ▼▼ */
-  const CHECKOUT_URL = 'https://pay.hotmart.com/TU-PRODUCTO';
-  window.location.href = CHECKOUT_URL;
+  const atcId = lpUuid();
+  if(PIXEL_ON && window.fbq) fbq('track','AddToCart',{},{eventID:atcId});
+  lpTrack('add_to_cart', atcId);
+  // Redirige al checkout de Hotmart SIN agregar parámetros (no se pierde info de Hotmart)
+  setTimeout(function(){
+    if(HOTMART_URL){ window.location.href = HOTMART_URL; }
+    else { alert('Falta configurar el link de Hotmart en el panel /admin'); }
+  }, 300);
 });
 
 /* ---- contador de cupos (persistente, con fallback en memoria) ---- */
@@ -626,6 +654,80 @@ window.addEventListener('scroll', ()=>{
   // mostrar la barra fija solo antes de llegar al checkout
   buybar.classList.toggle('show', y>620 && coTop>200);
 }, {passive:true});
+
+/* =====================================================================
+   CONFIG (Supabase) + META PIXEL + TRACKING (PageView / AddToCart + CAPI)
+   ===================================================================== */
+function lpUuid(){ return (crypto && crypto.randomUUID) ? crypto.randomUUID() : 'x'+Date.now()+Math.random().toString(16).slice(2); }
+function lpCookie(n){ const m = document.cookie.match('(^|;)\\s*'+n+'\\s*=\\s*([^;]+)'); return m ? m.pop() : ''; }
+function lpQp(n){ try{ return new URLSearchParams(location.search).get(n) || ''; }catch(e){ return ''; } }
+function lpSid(){ let s=''; try{ s=localStorage.getItem('lp_sid'); if(!s){ s=lpUuid(); localStorage.setItem('lp_sid',s);} }catch(e){ s=s||lpUuid(); } return s; }
+function lpNum(str){ const m=String(str||'').replace(/[^0-9.,]/g,'').replace(',','.'); const n=parseFloat(m); return isNaN(n)?BASE_PRICE:Math.round(n); }
+
+function lpApi(action, body){
+  return fetch(LP_API, {
+    method:'POST', keepalive:true,
+    headers:{'Content-Type':'application/json','apikey':LP_ANON,'Authorization':'Bearer '+LP_ANON},
+    body: JSON.stringify(Object.assign({action:action}, body||{}))
+  }).then(function(r){ return r.json(); });
+}
+
+function lpTrack(type, eventId){
+  return lpApi('track', {
+    type:type, event_id:eventId, session_id:lpSid(),
+    url:location.href, referrer:document.referrer,
+    utm_source:lpQp('utm_source'), utm_medium:lpQp('utm_medium'), utm_campaign:lpQp('utm_campaign'),
+    fbclid:lpQp('fbclid'), fbp:lpCookie('_fbp'), fbc:lpCookie('_fbc')
+  }).catch(function(){});
+}
+
+function lpInitPixel(id){
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', id);
+}
+
+function lpRenderVsl(url, type){
+  if(!url) return;
+  var sec=document.getElementById('vslSection'), frame=document.getElementById('vslFrame');
+  var html='', yt, vm;
+  type=(type||'auto').toLowerCase();
+  if(type==='youtube' || (type==='auto' && (yt=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/)))){
+    var id = yt ? yt[1] : (url.match(/[\w-]{6,}/)||[''])[0];
+    html='<iframe src="https://www.youtube.com/embed/'+id+'?rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+  } else if(type==='vimeo' || (type==='auto' && (vm=url.match(/vimeo\.com\/(?:video\/)?(\d+)/)))){
+    var vid = vm ? vm[1] : (url.match(/\d+/)||[''])[0];
+    html='<iframe src="https://player.vimeo.com/video/'+vid+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>';
+  } else if(type==='mp4' || (type==='auto' && /\.mp4(\?|$)/i.test(url))){
+    html='<video controls playsinline preload="metadata" src="'+url+'"></video>';
+  } else {
+    html='<iframe src="'+url+'" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+  }
+  frame.innerHTML=html; sec.hidden=false;
+}
+
+(function lpBoot(){
+  lpApi('get_public_config').then(function(r){
+    var c = (r && r.config) || {};
+    // precios
+    if(c.price){ BASE_PRICE = lpNum(c.price); document.querySelectorAll('.js-price').forEach(function(el){ el.textContent=c.price; }); recalc(); }
+    if(c.price_original){ document.querySelectorAll('.js-price-was').forEach(function(el){ el.textContent=c.price_original; }); }
+    // hotmart
+    HOTMART_URL = c.hotmart_url || '';
+    // vsl
+    if(c.vsl_url) lpRenderVsl(c.vsl_url, c.vsl_type);
+    // pixel
+    if(c.pixel_enabled && c.meta_pixel_id){ lpInitPixel(c.meta_pixel_id); PIXEL_ON=true; }
+    firePageView();
+  }).catch(function(){ firePageView(); });
+
+  function firePageView(){
+    var pvId = lpUuid();
+    if(PIXEL_ON && window.fbq) fbq('track','PageView',{},{eventID:pvId});
+    lpTrack('page_view', pvId);
+  }
+})();
 </script>
 </body>
 </html>
