@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- A/B SPLIT 50/50 (sticky por cookie). Esta es la Variante A; la B vive en /b.html.
-     ?noab=1 fuerza ver siempre la A (para testear). -->
+<!-- A/B SPLIT 20/80 (20% Variante A, 80% Variante B). Sticky por cookie. Esta es la A; la B vive en /b.html.
+     ?ab=a / ?ab=b fuerza una variante · ?noab=1 fuerza ver siempre la A (para testear). -->
 <script>
 (function(){try{
-  var m=document.cookie.match(/(?:^|;\s*)ab=(a|b)/), v=m&&m[1];
-  if(!v){ v=Math.random()<0.5?'a':'b'; document.cookie='ab='+v+';path=/;max-age=2592000;samesite=lax'; }
-  if(v==='b' && !/[?&]noab=1/.test(location.search)){ location.replace('/b'+location.search+location.hash); }
+  var qs=location.search, forced=(qs.match(/[?&]ab=(a|b)\b/)||[])[1];
+  var m=document.cookie.match(/(?:^|;\s*)ab=(a|b)/), v=forced||(m&&m[1]);
+  if(!v){ v=Math.random()<0.20?'a':'b'; }
+  document.cookie='ab='+v+';path=/;max-age=2592000;samesite=lax';
+  if(v==='b' && !/[?&]noab=1/.test(qs)){ location.replace('/b'+qs+location.hash); }
 }catch(e){}})();
 </script>
 <title>Claude Express — Tu infoproducto, tus anuncios y tu campaña en una tarde</title>
@@ -656,6 +658,7 @@ function recalc(){
        NO disparamos AddToCart aquí: lo maneja Hotmart en su checkout (evita duplicado). ---- */
 document.getElementById('buyBtn').addEventListener('click', function(e){
   e.preventDefault();
+  lpTrack('cta_click', lpUuid()); // registra el click de CTA por variante en el panel (keepalive)
   const dest = lpBuildCheckoutUrl(HOTMART_URL);
   if(dest){ window.location.href = dest; }
   else { alert('Falta configurar el link de Hotmart en el panel /admin'); }
@@ -745,7 +748,7 @@ function lpApi(action, body){
 
 function lpTrack(type, eventId){
   return lpApi('track', {
-    type:type, event_id:eventId, session_id:lpSid(),
+    type:type, event_id:eventId, session_id:lpSid(), variant:'a',
     url:location.href, referrer:document.referrer,
     utm_source:lpQp('utm_source'), utm_medium:lpQp('utm_medium'), utm_campaign:lpQp('utm_campaign'),
     fbclid:lpQp('fbclid'), fbp:lpCookie('_fbp'), fbc:lpCookie('_fbc')
