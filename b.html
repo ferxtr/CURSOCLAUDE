@@ -317,6 +317,40 @@
   .po-dots i:nth-child(3){animation-delay:.3s}
   @keyframes dots{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-5px)}}
 
+  /* ===== intro cinematográfico ===== */
+  #intro{position:fixed;inset:0;z-index:200;background:radial-gradient(120% 120% at 50% 42%,#1b1008,#060504);display:grid;place-items:center;transition:opacity .55s ease}
+  #intro.gone{opacity:0;pointer-events:none}
+  .intro-mark{display:flex;align-items:center;gap:14px;font-family:'Space Grotesk';font-weight:700;font-size:clamp(24px,6vw,42px)}
+  .intro-spark{color:var(--ember-hot);display:inline-block;animation:introSpark 1.1s cubic-bezier(.2,1.5,.4,1) both;filter:drop-shadow(0 0 22px rgba(255,106,61,.85))}
+  .intro-name{opacity:0;transform:translateX(-10px);animation:introName .7s ease .32s forwards;
+    background:linear-gradient(100deg,#FFE3B0,var(--amber),var(--ember-hot));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .intro-ring{position:absolute;width:60px;height:60px;border-radius:50%;border:2px solid rgba(255,106,61,.6);animation:introRing 1.1s ease-out both}
+  @keyframes introSpark{0%{opacity:0;transform:scale(0) rotate(-120deg)}60%{opacity:1;transform:scale(1.35) rotate(12deg)}100%{transform:scale(1) rotate(0)}}
+  @keyframes introName{to{opacity:1;transform:none}}
+  @keyframes introRing{0%{opacity:.9;transform:scale(.3)}100%{opacity:0;transform:scale(6)}}
+
+  /* ===== spotlight que sigue el cursor dentro de las tarjetas ===== */
+  .glass::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .35s;z-index:0;
+    background:radial-gradient(240px circle at var(--sx,50%) var(--sy,50%), rgba(255,150,90,.16), transparent 60%)}
+  .glass:hover::after{opacity:1}
+  .glass>*{position:relative;z-index:1}
+
+  /* ===== borde con gradiente girando en la tarjeta de compra ===== */
+  @property --ang{syntax:"<angle>";initial-value:0deg;inherits:false}
+  .checkout-card{position:relative}
+  .checkout-card::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;pointer-events:none;z-index:3;
+    background:conic-gradient(from var(--ang,0deg), transparent 0 58%, var(--amber), var(--ember-hot) 76%, transparent 88%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+    animation:angSpin 6s linear infinite}
+  @keyframes angSpin{to{--ang:360deg}}
+
+  /* ===== parallax orbs + SVG que se dibujan ===== */
+  .orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.2;pointer-events:none;z-index:0;will-change:transform}
+  .svgi{width:32px;height:32px;display:block;margin-bottom:12px;overflow:visible}
+  .svgi *{fill:none;stroke:var(--ember-hot);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:260;stroke-dashoffset:260;transition:stroke-dashoffset 1.1s ease .15s}
+  .mcard.in .svgi *{stroke-dashoffset:0}
+
   @media(min-width:600px){
     .mech .three,.pain-list,.tst-grid{grid-template-columns:1fr 1fr}
     .mech .three .mcard:last-child{grid-column:1/-1}
@@ -329,6 +363,22 @@
 </style>
 </head>
 <body>
+
+<!-- INTRO CINEMATOGRÁFICO (1 vez por sesión) -->
+<div id="intro" aria-hidden="true">
+  <div class="intro-ring"></div>
+  <div class="intro-mark"><span class="intro-spark">✦</span><span class="intro-name">Claude Express</span></div>
+</div>
+<script>
+(function(){var i=document.getElementById('intro');if(!i)return;
+  var seen=false;try{seen=sessionStorage.getItem('ce_intro');}catch(e){}
+  var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(seen||rm){ i.parentNode.removeChild(i); return; }
+  try{sessionStorage.setItem('ce_intro','1');}catch(e){}
+  function close(){ i.classList.add('gone'); setTimeout(function(){ if(i.parentNode) i.parentNode.removeChild(i); }, 600); }
+  setTimeout(close, 1500); i.addEventListener('click', close);
+})();
+</script>
 
 <div id="prog"></div>
 <div id="cursor"></div>
@@ -424,24 +474,29 @@
 
 <!-- MECHANISM -->
 <section class="mech">
+  <div class="orb" data-plx="1" style="width:340px;height:340px;background:var(--ember);top:-60px;left:-80px"></div>
+  <div class="orb" data-plx="0.6" style="width:280px;height:280px;background:var(--amber);bottom:-40px;right:-70px"></div>
   <div class="wrap">
     <p class="kicker reveal">El método</p>
     <h2 class="title reveal">Claude Express: <span class="grad">1 herramienta, 3 salidas listas.</span></h2>
     <p class="lead reveal d1">No es "aprender IA". Es seguir un paso a paso donde la IA produce las 3 piezas que necesitas para salir a vender — y tú solo das la orden y eliges.</p>
     <div class="three">
       <div class="mcard glass reveal" data-tilt>
+        <svg class="svgi" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg>
         <div class="num">01 / Creativos</div>
         <h3>Anuncios que venden, en minutos</h3>
         <p>Generas el creativo, le pones subtítulos y un hook que frena el scroll — en modo automático. El mismo tipo de anuncio con el que llegaste a esta página.</p>
         <span class="tag">video + subtítulos + hook</span>
       </div>
       <div class="mcard glass reveal d1" data-tilt>
+        <svg class="svgi" viewBox="0 0 24 24"><path d="M5 4a2 2 0 0 1 2-2h12v17H7a2 2 0 0 0-2 2z"/><path d="M9 7h7M9 11h7"/></svg>
         <div class="num">02 / Producto</div>
         <h3>Tu infoproducto de cero</h3>
         <p>La IA te arma el infoproducto completo, del mismo nivel que lo que estás viendo ahora. Estructura, contenido y diseño, listo para entregar.</p>
         <span class="tag">ebook + bonos + entregable</span>
       </div>
       <div class="mcard glass reveal d2" data-tilt>
+        <svg class="svgi" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/></svg>
         <div class="num">03 / Campaña</div>
         <h3>Tu campaña de Meta diagramada</h3>
         <p>Estructura de testeo y de escala armada con la IA. Sabes exactamente qué cargar en el Administrador de Anuncios para salir a probar hoy.</p>
@@ -468,6 +523,7 @@
 
 <!-- TESTIMONIALS -->
 <section class="tst">
+  <div class="orb" data-plx="0.8" style="width:300px;height:300px;background:#7a3bff;top:10%;right:-90px"></div>
   <div class="wrap">
     <p class="kicker reveal">Lo que dicen los alumnos</p>
     <h2 class="title reveal">Gente común que ya armó su sistema.</h2>
@@ -610,6 +666,7 @@
 
 <!-- FINAL -->
 <section class="final">
+  <div class="orb" data-plx="1.1" style="width:360px;height:360px;background:var(--ember);top:-40px;left:50%;margin-left:-180px"></div>
   <div class="wrap">
     <p class="kicker reveal" style="color:#FFC9B5">Última llamada</p>
     <h2 class="title reveal">El sistema ya funcionó contigo. Ahora hazlo tuyo.</h2>
@@ -984,7 +1041,33 @@ function lpRenderVsl(url, type){
       document.body.appendChild(s);
       setTimeout(function(){ s.remove(); }, 700);
     }, {passive:true});
+
+    /* spotlight que sigue el cursor dentro de las tarjetas (1 listener delegado) */
+    document.addEventListener('pointermove', function(e){
+      var card=e.target.closest && e.target.closest('.glass'); if(!card) return;
+      var r=card.getBoundingClientRect();
+      card.style.setProperty('--sx', ((e.clientX-r.left)/r.width*100).toFixed(1)+'%');
+      card.style.setProperty('--sy', ((e.clientY-r.top)/r.height*100).toFixed(1)+'%');
+    }, {passive:true});
   }
+
+  /* parallax: orbs y capas a distinta velocidad al hacer scroll */
+  (function(){
+    var plx=[].slice.call(document.querySelectorAll('[data-plx]')); if(!plx.length) return;
+    var t=0;
+    function upd(){
+      var vh=innerHeight;
+      for(var i=0;i<plx.length;i++){
+        var el=plx[i], r=el.getBoundingClientRect(), center=r.top+r.height/2;
+        var off=(center-vh/2)/vh, sp=parseFloat(el.getAttribute('data-plx'))||0.5;
+        el.style.transform='translate3d(0,'+(off*sp*-150).toFixed(1)+'px,0)';
+      }
+      t=0;
+    }
+    addEventListener('scroll', function(){ if(!t) t=requestAnimationFrame(upd); }, {passive:true});
+    addEventListener('resize', function(){ if(!t) t=requestAnimationFrame(upd); }, {passive:true});
+    upd();
+  })();
 
   /* hero canvas: partículas + constelación que reacciona al mouse */
   (function(){
