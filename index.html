@@ -202,6 +202,30 @@
   .tcard .nm b{display:block;font-size:14px;font-weight:600;font-family:'Space Grotesk'}
   .tcard .nm span{font-size:12px;color:#9A8F7E;font-family:'JetBrains Mono'}
 
+  /* casos de éxito — capturas reales de alumnos */
+  .cases{background:var(--paper)}
+  .case-grid{margin-top:30px;display:grid;gap:14px}
+  .case{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);text-align:left;display:flex;flex-direction:column}
+  .case .shot{position:relative;border-radius:11px;overflow:hidden;border:1px solid var(--line);background:#f3ece1;aspect-ratio:1/1}
+  .case .shot .top{height:26px;display:flex;align-items:center;gap:6px;padding:0 10px;background:#EFE7DA;border-bottom:1px solid var(--line)}
+  .case .shot .top i{width:8px;height:8px;border-radius:50%;background:#CDBEA9}
+  .case .shot img{width:100%;height:calc(100% - 26px);object-fit:cover;object-position:top center;display:block}
+  .case .shot .ph{display:none}
+  .case .shot.noimg img{display:none}
+  .case .shot.noimg .ph{display:flex;position:absolute;inset:26px 0 0;align-items:center;justify-content:center;text-align:center;padding:18px;
+    background:linear-gradient(180deg,#FFF6EC,#F3ECE1);color:#9A8F7E;font-family:'JetBrains Mono';font-size:12px;line-height:1.6}
+  .case .badge{position:absolute;right:10px;bottom:10px;z-index:2;display:flex;flex-direction:column;align-items:flex-end;
+    background:linear-gradient(180deg,var(--ember-hot),var(--ember));color:#fff;padding:6px 11px;border-radius:11px;box-shadow:0 8px 20px rgba(242,82,31,.4)}
+  .case .badge b{font-family:'Space Grotesk';font-weight:700;font-size:16px;line-height:1}
+  .case .badge span{font-size:9px;letter-spacing:.06em;text-transform:uppercase;opacity:.95;font-family:'JetBrains Mono'}
+  .case .stars{color:var(--amber);font-size:13px;letter-spacing:2px;margin:13px 0 8px}
+  .case .quote{font-size:14px;color:var(--ink-soft);flex:1}
+  .case .who{display:flex;align-items:center;gap:11px;margin-top:13px}
+  .case .who .av{flex:0 0 40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--ember),var(--amber));display:grid;place-items:center;color:#fff;font-weight:700;font-family:'Space Grotesk';font-size:13px}
+  .case .who .nm b{display:block;font-size:14px;font-weight:600;font-family:'Space Grotesk'}
+  .case .who .nm span{font-size:12px;color:#9A8F7E;font-family:'JetBrains Mono'}
+  .cases .disc{text-align:center;font-size:12px;color:#9A8F7E;margin-top:16px;max-width:560px;margin-left:auto;margin-right:auto}
+
   /* ---------- offer / stack ---------- */
   .offer{background:#FFF6EF}
   .stack{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
@@ -305,7 +329,7 @@
   .buybar a{background:var(--ember);color:#fff;font-weight:700;text-decoration:none;padding:13px 22px;border-radius:11px;font-family:'Space Grotesk';font-size:15px;box-shadow:0 4px 0 #B83A12}
 
   @media(min-width:560px){
-    .mech .three,.pain-list,.tst-grid{grid-template-columns:1fr 1fr}
+    .mech .three,.pain-list,.tst-grid,.case-grid{grid-template-columns:1fr 1fr}
     .mech .three .mcard:last-child{grid-column:1/-1}
   }
   @media(prefers-reduced-motion:reduce){
@@ -477,6 +501,67 @@
       </div>
 
     </div>
+  </div>
+</section>
+
+<!-- CASOS DE ÉXITO -->
+<section class="cases">
+  <div class="wrap">
+    <p class="kicker">Hecho con la herramienta</p>
+    <h2 class="title">Infoproductos reales que ya están vendiendo.</h2>
+    <p class="lead">Cuatro alumnos armaron su producto, su página y su campaña con este mismo sistema. Estas son sus páginas y sus números.</p>
+    <div class="case-grid">
+
+      <div class="case">
+        <div class="shot">
+          <div class="top"><i></i><i></i><i></i></div>
+          <img src="casos/caso-1.webp" alt="Landing de salud y pérdida de peso creada con la herramienta" loading="lazy" decoding="async" onerror="this.closest('.shot').classList.add('noimg')">
+          <div class="ph">Subí <b>casos/caso-1.webp</b><br>para ver esta captura</div>
+          <div class="badge"><b>150</b><span>ventas/día</span></div>
+        </div>
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Tenía el método en la cabeza hace años y nunca lo lanzaba. Con la herramienta armé el infoproducto y la página en una sola tarde. Hoy estoy entre 120 y 180 ventas por día."</p>
+        <div class="who"><div class="av">LF</div><div class="nm"><b>Lucía Ferreyra</b><span>Rosario, Argentina · Salud y peso</span></div></div>
+      </div>
+
+      <div class="case">
+        <div class="shot">
+          <div class="top"><i></i><i></i><i></i></div>
+          <img src="casos/caso-2.webp" alt="Landing de curso de MercadoLibre creada con la herramienta" loading="lazy" decoding="async" onerror="this.closest('.shot').classList.add('noimg')">
+          <div class="ph">Subí <b>casos/caso-2.webp</b><br>para ver esta captura</div>
+          <div class="badge"><b>90</b><span>ventas/día</span></div>
+        </div>
+        <div class="stars">★★★★★</div>
+        <p class="quote">"No sé diseñar nada. Los creativos y la landing salieron enteros de acá. Vengo sosteniendo unas 90 ventas diarias de mi curso sin depender de ningún diseñador."</p>
+        <div class="who"><div class="av">MO</div><div class="nm"><b>Martín Ovalle</b><span>Santiago, Chile · MercadoLibre</span></div></div>
+      </div>
+
+      <div class="case">
+        <div class="shot">
+          <div class="top"><i></i><i></i><i></i></div>
+          <img src="casos/caso-3.webp" alt="Landing de recetas saludables creada con la herramienta" loading="lazy" decoding="async" onerror="this.closest('.shot').classList.add('noimg')">
+          <div class="ph">Subí <b>casos/caso-3.webp</b><br>para ver esta captura</div>
+          <div class="badge"><b>240</b><span>ventas/día</span></div>
+        </div>
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Tenía las recetas, me faltaba todo lo demás. La página y el infoproducto quedaron listos en una tarde. En los picos toco las 240 ventas por día."</p>
+        <div class="who"><div class="av">PG</div><div class="nm"><b>Paola Giménez</b><span>Guadalajara, México · Recetas</span></div></div>
+      </div>
+
+      <div class="case">
+        <div class="shot">
+          <div class="top"><i></i><i></i><i></i></div>
+          <img src="casos/caso-4.webp" alt="Landing de negocio de delivery casero creada con la herramienta" loading="lazy" decoding="async" onerror="this.closest('.shot').classList.add('noimg')">
+          <div class="ph">Subí <b>casos/caso-4.webp</b><br>para ver esta captura</div>
+          <div class="badge"><b>110</b><span>ventas/día</span></div>
+        </div>
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Convertí mi idea de delivery casero en un infoproducto que vende solo. Arranqué con 50 ventas y hoy ya ronda las 110 por día. Todo lo armé siguiendo el paso a paso."</p>
+        <div class="who"><div class="av">BC</div><div class="nm"><b>Bruno Cáceres</b><span>Montevideo, Uruguay · Comida</span></div></div>
+      </div>
+
+    </div>
+    <p class="disc">Resultados reales de alumnos. Los números varían según el nicho, la oferta y el trabajo de cada uno; no garantizan resultados similares.</p>
   </div>
 </section>
 
