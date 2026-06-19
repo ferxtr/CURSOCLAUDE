@@ -1,8 +1,8 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/LandingB", "destination": "/b.html" },
-    { "source": "/landingb", "destination": "/b.html" }
+    { "source": "/LandingB", "destination": "/b" },
+    { "source": "/landingb", "destination": "/b" }
   ],
   "headers": [
     {
