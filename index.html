@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- A/B SPLIT 50/50 (sticky por cookie). Esta es la Variante A; la B vive en /b.html.
+     ?noab=1 fuerza ver siempre la A (para testear). -->
+<script>
+(function(){try{
+  var m=document.cookie.match(/(?:^|;\s*)ab=(a|b)/), v=m&&m[1];
+  if(!v){ v=Math.random()<0.5?'a':'b'; document.cookie='ab='+v+';path=/;max-age=2592000;samesite=lax'; }
+  if(v==='b' && !/[?&]noab=1/.test(location.search)){ location.replace('/b'+location.search+location.hash); }
+}catch(e){}})();
+</script>
 <title>Claude Express — Tu infoproducto, tus anuncios y tu campaña en una tarde</title>
 <meta name="description" content="Deja de pagar Canva, CapCut y Gamma. Una sola IA arma tu infoproducto, tus creativos y tu campaña de Meta. En simples pasos, en una tarde.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -610,8 +619,9 @@
 const LP_API = 'https://yopxitmcirrcvrvltfai.supabase.co/functions/v1/lp-api';
 const LP_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvcHhpdG1jaXJyY3Zydmx0ZmFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MzUwMzksImV4cCI6MjA5NTAxMTAzOX0.5iwp6EcFAnl2L1_Mb4ZdGUQP71wpui7Wfjderst2Rqk';
 let BASE_PRICE = 19;       // se sobrescribe con el precio del panel
-let HOTMART_URL = '';      // se carga del panel (se usa LIMPIO, sin params)
+let HOTMART_URL = '';      // se carga del panel
 let PIXEL_ON = false;
+var AB_VARIANT = 'lp_a';   // variante A (para medir conversión por variante en Hotmart vía sck)
 /* precio único: los 2 bonos van incluidos gratis (sin sumar al total) */
 
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -669,6 +679,7 @@ function lpBuildCheckoutUrl(base){
     if(!fbc && fbclid) fbc = 'fb.1.' + Date.now() + '.' + fbclid; // reconstruye _fbc si no está la cookie
     if(fbp && !u.searchParams.has('_fbp')) u.searchParams.set('_fbp', fbp);
     if(fbc && !u.searchParams.has('_fbc')) u.searchParams.set('_fbc', fbc);
+    if(!u.searchParams.has('sck')) u.searchParams.set('sck', AB_VARIANT); // tag de variante A/B para medir en Hotmart
     return u.toString();
   }catch(e){ return base; }
 }

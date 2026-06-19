@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Express — Tu infoproducto, tus anuncios y tu campaña en una tarde</title>
+<meta name="description" content="Deja de pagar Canva, CapCut y Gamma. Una sola IA arma tu infoproducto, tus creativos y tu campaña de Meta. En simples pasos, en una tarde.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================================
+     VARIANTE B — "viva" · dark premium · efectos en vanilla (cero librerías)
+     ========================================================================= */
+  :root{
+    --bg:#0A0807; --bg2:#130D0A; --bg3:#1A1310;
+    --ink:#F7F1E8; --muted:#B6AB9B; --soft:#8C8273;
+    --line:rgba(255,255,255,.10); --line2:rgba(255,255,255,.06);
+    --card:rgba(255,255,255,.045);
+    --ember:#F2521F; --ember-hot:#FF6A3D; --amber:#FFB020; --moss:#34C79A;
+    --radius:18px;
+    --glow:0 0 0 1px rgba(255,255,255,.05), 0 18px 50px rgba(0,0,0,.5);
+    --mx:50vw; --my:30vh;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);
+    line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;
+  }
+  /* aura global que sigue el cursor */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(380px 380px at var(--mx) var(--my), rgba(242,82,31,.10), transparent 70%);
+    transition:background .2s;
+  }
+  h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;letter-spacing:-.02em;line-height:1.05}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .wrap{width:100%;max-width:720px;margin:0 auto;padding:0 22px;position:relative;z-index:2}
+  .em{color:var(--ember-hot)}
+  .grad{background:linear-gradient(100deg,#FFD9A0,var(--amber) 30%,var(--ember-hot) 70%,#FF8A5C);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hl{background:linear-gradient(180deg,transparent 58%,rgba(255,176,32,.45) 58%);padding:0 3px}
+  .strike{text-decoration:line-through;opacity:.5;font-weight:500}
+  .spark{color:var(--ember-hot);font-weight:700}
+  section{padding:66px 0;position:relative;z-index:2}
+
+  /* scroll progress */
+  #prog{position:fixed;top:0;left:0;height:3px;width:100%;transform:scaleX(0);transform-origin:0 50%;
+    background:linear-gradient(90deg,var(--ember),var(--amber));z-index:90;box-shadow:0 0 12px rgba(255,106,61,.6)}
+
+  /* cursor glow */
+  #cursor{position:fixed;top:0;left:0;width:300px;height:300px;border-radius:50%;pointer-events:none;z-index:80;
+    background:radial-gradient(circle, rgba(255,106,61,.16), transparent 60%);mix-blend-mode:screen;will-change:transform;display:none}
+
+  /* topbar */
+  .topbar{position:sticky;top:0;z-index:60;background:rgba(10,8,7,.6);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line2);transition:background .3s}
+  .topbar.scrolled{background:rgba(10,8,7,.92)}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+  .brand{font-family:'Space Grotesk';font-weight:700;font-size:16px;display:flex;align-items:center;gap:7px}
+  .topbar .mini-cta{opacity:0;transform:translateY(-6px);pointer-events:none;transition:.3s;
+    background:var(--ember);color:#fff;font-weight:700;font-size:13px;padding:9px 16px;border-radius:999px;text-decoration:none;box-shadow:0 6px 20px rgba(242,82,31,.45)}
+  .topbar.scrolled .mini-cta{opacity:1;transform:none;pointer-events:auto}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;padding:64px 0 80px;text-align:center;
+    background:radial-gradient(130% 90% at 50% -20%, #2A1C13 0%, var(--bg) 60%)}
+  #fx{position:absolute;inset:0;z-index:1;pointer-events:none}
+  .hero .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;z-index:0;animation:drift 18s ease-in-out infinite}
+  .hero .b1{width:420px;height:420px;background:radial-gradient(circle,#F2521F,transparent 70%);top:-120px;left:-80px}
+  .hero .b2{width:380px;height:380px;background:radial-gradient(circle,#FFB020,transparent 70%);top:-60px;right:-100px;animation-delay:-6s}
+  .hero .b3{width:300px;height:300px;background:radial-gradient(circle,#7a3bff55,transparent 70%);bottom:-80px;left:40%;animation-delay:-11s}
+  @keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,20px) scale(1.08)}66%{transform:translate(-20px,30px) scale(.96)}}
+  .hero .wrap{padding-top:8px}
+  .eyebrow{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.04em;color:#FFC9B5;
+    background:rgba(242,82,31,.12);border:1px solid rgba(242,82,31,.4);
+    display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;margin-bottom:24px;
+    box-shadow:0 0 30px rgba(242,82,31,.18)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--ember-hot);box-shadow:0 0 0 0 rgba(255,106,61,.6);animation:pulse 2.2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,106,61,.5)}70%{box-shadow:0 0 0 10px rgba(255,106,61,0)}100%{box-shadow:0 0 0 0 rgba(255,106,61,0)}}
+  .hero h1{font-size:clamp(34px,8.4vw,54px);font-weight:700;margin-bottom:20px;letter-spacing:-.03em}
+  .hero h1 .typed{border-right:3px solid var(--ember-hot);padding-right:2px}
+  .hero .sub{font-size:clamp(16px,4.4vw,19px);color:var(--muted);max-width:580px;margin:0 auto 16px}
+  .hero .sub b{color:#fff;font-weight:600}
+
+  .gen-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:16px 18px;margin:26px auto 30px;max-width:460px;text-align:left;backdrop-filter:blur(10px);
+    font-family:'JetBrains Mono';font-size:13px;color:#D2C7B6;overflow:hidden;box-shadow:var(--glow)}
+  .gen-card::after{content:"";position:absolute;top:0;left:-150%;width:60%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.10),transparent);animation:sweep 4.5s ease-in-out infinite}
+  @keyframes sweep{0%{left:-150%}55%,100%{left:160%}}
+  .gen-card .line{display:flex;gap:9px;align-items:center;padding:4px 0;position:relative;z-index:1}
+  .gen-card .ok{color:#7FE0AC}
+  .gen-card .t{margin-left:auto;color:#8C8273;font-size:12px}
+
+  /* CTA */
+  .cta-row{display:flex;flex-direction:column;align-items:center;gap:12px}
+  .cta{position:relative;display:inline-flex;flex-direction:column;align-items:center;gap:2px;
+    background:linear-gradient(180deg,var(--ember-hot),var(--ember));color:#fff;text-decoration:none;font-weight:700;
+    font-size:18px;padding:18px 32px;border-radius:15px;border:none;cursor:pointer;width:100%;max-width:430px;
+    font-family:'Space Grotesk';overflow:hidden;will-change:transform;
+    box-shadow:0 10px 30px rgba(242,82,31,.45), inset 0 1px 0 rgba(255,255,255,.25);
+    transition:transform .15s cubic-bezier(.2,.8,.2,1), box-shadow .2s}
+  .cta::before{content:"";position:absolute;top:0;left:-130%;width:55%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-18deg);transition:left .6s}
+  .cta:hover::before{left:150%}
+  .cta:hover{box-shadow:0 16px 44px rgba(242,82,31,.6), inset 0 1px 0 rgba(255,255,255,.3)}
+  .cta:active{transform:scale(.98)}
+  .cta .sm{font-family:'Inter';font-weight:500;font-size:12.5px;opacity:.95}
+  .undercta{font-size:13px;color:var(--soft);display:flex;align-items:center;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:4px}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
+
+  /* section heads */
+  .kicker{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.07em;color:var(--ember-hot);
+    text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px}
+  .kicker::before{content:"✦";filter:drop-shadow(0 0 6px rgba(255,106,61,.7))}
+  h2.title{font-size:clamp(27px,6.6vw,38px);font-weight:700;margin-bottom:14px;text-align:center;letter-spacing:-.02em}
+  .lead{font-size:17px;color:var(--muted);margin:0 auto 8px;max-width:620px;text-align:center}
+
+  /* glass card base */
+  .glass{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    backdrop-filter:blur(10px);box-shadow:var(--glow)}
+  [data-tilt]{transition:transform .25s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d;will-change:transform}
+
+  /* replace strip */
+  .replace{background:linear-gradient(180deg,var(--bg),var(--bg2));text-align:center;padding:34px 0}
+  .replace .lbl{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.05em;color:var(--soft);margin-bottom:16px}
+  .tools{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;align-items:center}
+  .tool{font-weight:600;font-size:15px;color:#8b8273;position:relative;padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.02)}
+  .tool::after{content:"";position:absolute;left:9px;right:9px;top:50%;height:2px;background:var(--ember-hot);transform:rotate(-7deg);box-shadow:0 0 8px rgba(255,106,61,.6)}
+  .arrowto{color:var(--ember-hot);font-size:24px;font-weight:700;margin:10px 0;animation:bob 1.8s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  .one{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(90deg,var(--ember),#FF8A5C);color:#fff;font-weight:700;font-size:16px;padding:12px 22px;border-radius:12px;font-family:'Space Grotesk';box-shadow:0 10px 30px rgba(242,82,31,.4)}
+
+  /* VSL */
+  .vsl{padding:48px 0 8px}
+  .vsl .head{text-align:center;margin-bottom:20px}
+  .vsl .frame{position:relative;width:100%;max-width:400px;margin:0 auto;aspect-ratio:9/16;border-radius:var(--radius);
+    overflow:hidden;background:#000;border:1px solid var(--line);box-shadow:0 0 60px rgba(242,82,31,.25), var(--glow)}
+  .vsl .frame iframe,.vsl .frame video{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+  .vsl .proof-note{margin-top:16px;font-size:14px;color:var(--muted);text-align:center;font-style:italic}
+  .vsl .vcta{margin-top:20px}
+
+  /* pain */
+  .pain-list{margin-top:30px;display:grid;gap:14px}
+  .pain-item{display:flex;gap:13px;align-items:flex-start;padding:17px 18px}
+  .pain-item .x{flex:0 0 28px;height:28px;border-radius:50%;background:rgba(242,82,31,.16);color:var(--ember-hot);display:grid;place-items:center;font-weight:700;font-size:14px}
+  .pain-item p{font-size:15px;color:var(--muted)}
+  .pain-item b{color:#fff}
+
+  /* mechanism */
+  .mech .three{margin-top:34px;display:grid;gap:16px}
+  .mcard{padding:24px;position:relative;overflow:hidden}
+  .mcard::before{content:"";position:absolute;inset:0;border-radius:var(--radius);padding:1px;
+    background:linear-gradient(140deg,rgba(255,176,32,.5),transparent 40%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.7}
+  .mcard .num{font-family:'JetBrains Mono';font-size:13px;color:var(--ember-hot);font-weight:500;margin-bottom:10px}
+  .mcard h3{font-size:20px;margin-bottom:8px;color:#fff}
+  .mcard p{font-size:14.5px;color:var(--muted)}
+  .mcard .tag{display:inline-block;margin-top:14px;font-size:12px;font-family:'JetBrains Mono';background:rgba(242,82,31,.14);color:var(--ember-hot);padding:6px 11px;border-radius:8px}
+
+  /* timeline */
+  .tl-wrap{position:relative;margin:34px auto 0;padding-left:26px;max-width:560px}
+  .tl-wrap::before{content:"";position:absolute;left:5px;top:4px;bottom:4px;width:2px;background:var(--line)}
+  .tl-line{position:absolute;left:5px;top:4px;width:2px;background:linear-gradient(180deg,var(--ember),var(--amber));height:0;transition:height 1.2s ease;box-shadow:0 0 10px rgba(255,106,61,.6)}
+  .tl-row{display:flex;gap:16px;padding:0 0 24px;position:relative}
+  .tl-row:last-child{padding-bottom:0}
+  .tl-time{font-family:'JetBrains Mono';font-size:14px;color:var(--amber);flex:0 0 56px;font-weight:500}
+  .tl-body h3{font-size:18px;color:#fff;margin-bottom:4px}
+  .tl-body p{font-size:14px;color:var(--muted)}
+  .tl-dot{position:absolute;left:-26px;top:3px;width:14px;height:14px;border-radius:50%;background:var(--ember-hot);box-shadow:0 0 0 4px var(--bg),0 0 14px rgba(255,106,61,.8);transform:translateX(-1px)}
+
+  /* testimonials */
+  .tst-grid{margin-top:34px;display:grid;gap:16px}
+  .tcard{padding:22px;display:flex;flex-direction:column}
+  .tcard .stars{color:var(--amber);font-size:14px;letter-spacing:2px;margin-bottom:10px;filter:drop-shadow(0 0 5px rgba(255,176,32,.4))}
+  .tcard .quote{font-size:14.5px;color:var(--muted);margin-bottom:16px;flex:1}
+  .tcard .who{display:flex;align-items:center;gap:11px}
+  .tcard .av{flex:0 0 42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--ember),var(--amber));display:grid;place-items:center;color:#fff;font-weight:700;font-family:'Space Grotesk';font-size:14px;box-shadow:0 6px 18px rgba(242,82,31,.4)}
+  .tcard .nm b{display:block;font-size:14px;font-weight:600;font-family:'Space Grotesk';color:#fff}
+  .tcard .nm span{font-size:12px;color:var(--soft);font-family:'JetBrains Mono'}
+
+  /* offer stack */
+  .stack{margin-top:30px;overflow:hidden}
+  .stack-row{display:flex;justify-content:space-between;gap:14px;padding:16px 20px;border-bottom:1px solid var(--line2);align-items:flex-start}
+  .stack-row:last-of-type{border-bottom:none}
+  .stack-row .l b{display:block;font-weight:600;font-size:15px;margin-bottom:2px;color:#fff}
+  .stack-row .l span{color:var(--muted);font-size:13px}
+  .stack-row .v{font-family:'JetBrains Mono';font-size:14px;color:var(--muted);white-space:nowrap;flex:0 0 auto}
+  .stack-total{background:rgba(255,255,255,.05);padding:20px;display:flex;justify-content:space-between;align-items:center}
+  .stack-total .tl-lbl{font-size:14px;color:var(--muted)}
+  .stack-total .tl-val{font-family:'Space Grotesk';font-weight:700;color:#fff}
+  .stack-total .tl-val .strike{color:var(--soft)}
+
+  /* checkout */
+  .bumps{scroll-margin-top:74px}
+  .checkout-card{margin-top:30px;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(255,176,32,.35);
+    background:var(--card);backdrop-filter:blur(10px);box-shadow:0 0 60px rgba(242,82,31,.18), var(--glow)}
+  .co-head{background:linear-gradient(90deg,rgba(242,82,31,.18),transparent);color:#fff;padding:15px 18px;font-family:'Space Grotesk';font-weight:600;font-size:15px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--line)}
+  .co-base{display:flex;justify-content:space-between;align-items:center;padding:17px 18px;border-bottom:1px solid var(--line2)}
+  .co-base .nm b{display:block;font-size:15px;color:#fff}
+  .co-base .nm span{font-size:13px;color:var(--muted)}
+  .co-base .pr{font-family:'JetBrains Mono';font-weight:500}
+  .bono{display:flex;gap:13px;padding:16px 18px;border-bottom:1px dashed var(--line2);background:rgba(52,199,154,.06);position:relative}
+  .bono .box{flex:0 0 24px;height:24px;border-radius:6px;display:grid;place-items:center;margin-top:2px;background:var(--moss)}
+  .bono .box svg{width:15px;height:15px}
+  .bono .info .flag{display:inline-block;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.04em;background:var(--moss);color:#06281e;font-weight:700;padding:3px 8px;border-radius:6px;margin-bottom:7px}
+  .bono .info b{display:block;font-size:15px;margin-bottom:4px;line-height:1.3;color:#fff}
+  .bono .info p{font-size:13.5px;color:var(--muted);margin-bottom:7px}
+  .bono .info .price{font-family:'JetBrains Mono';font-size:14px;color:var(--muted)}
+  .bono .info .price .was{text-decoration:line-through;opacity:.5;margin-right:7px}
+  .bono .info .price b{display:inline;color:var(--moss);font-weight:700;font-size:15px;font-family:'Space Grotesk'}
+  .co-total{padding:20px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.04)}
+  .co-total .lbl{font-size:14px;color:var(--muted)}
+  .co-total .amt{font-family:'Space Grotesk';font-weight:700;font-size:32px;color:#fff}
+  .co-foot{padding:0 18px 22px}
+  .co-foot .cta{font-size:19px}
+
+  /* guarantee */
+  .gua-card{display:flex;gap:18px;align-items:center;padding:24px}
+  .gua-seal{flex:0 0 80px;height:80px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#46e0ad,var(--moss));color:#06281e;display:grid;place-items:center;text-align:center;font-family:'Space Grotesk';font-weight:700;font-size:13px;line-height:1.1;box-shadow:0 0 30px rgba(52,199,154,.4)}
+  .gua-card h3{font-size:19px;color:#7fe9c6;margin-bottom:6px}
+  .gua-card p{font-size:14px;color:var(--muted)}
+
+  /* urgency */
+  .urgency{text-align:center;background:radial-gradient(120% 100% at 50% 0%,#2A1C13,var(--bg))}
+  .cuposBig{font-family:'Space Grotesk';font-weight:700;font-size:clamp(28px,7.5vw,42px);color:var(--amber);margin:8px 0;filter:drop-shadow(0 0 18px rgba(255,176,32,.4))}
+  .bar{max-width:380px;margin:16px auto 0;height:12px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ember),var(--amber));border-radius:999px;transition:width 1s ease;box-shadow:0 0 14px rgba(255,106,61,.6)}
+  .urgency p{color:var(--muted);font-size:14px;margin-top:12px}
+
+  /* faq */
+  .q{margin-top:13px;border-radius:14px;overflow:hidden}
+  .q summary{list-style:none;cursor:pointer;padding:17px 19px;font-weight:600;font-size:15px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:'Space Grotesk';color:#fff}
+  .q summary::-webkit-details-marker{display:none}
+  .q summary .ic{flex:0 0 24px;height:24px;border-radius:50%;background:rgba(242,82,31,.16);color:var(--ember-hot);display:grid;place-items:center;font-weight:700;transition:.25s}
+  .q[open] summary .ic{transform:rotate(135deg)}
+  .q .a{padding:0 19px 18px;font-size:14.5px;color:var(--muted)}
+
+  /* final */
+  .final{text-align:center;background:radial-gradient(120% 100% at 50% 0%,#2A1C13,var(--bg))}
+  .final h2{color:#fff;margin-bottom:14px}
+  .final p{color:var(--muted);margin-bottom:26px;font-size:16px;max-width:560px;margin-left:auto;margin-right:auto}
+
+  /* footer */
+  footer{background:#070605;color:var(--soft);padding:38px 0;font-size:12.5px;border-top:1px solid var(--line2)}
+  footer .wrap{text-align:center}
+  footer .disc{max-width:580px;margin:0 auto 16px;line-height:1.6}
+  footer a{color:var(--muted)}
+
+  /* sticky buy bar */
+  .buybar{position:fixed;left:0;right:0;bottom:0;z-index:70;background:rgba(13,10,8,.86);backdrop-filter:blur(14px);
+    border-top:1px solid var(--line);padding:11px 16px;display:flex;align-items:center;gap:12px;
+    transform:translateY(130%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+  .buybar.show{transform:none}
+  .buybar .pr{flex:1}
+  .buybar .pr b{font-family:'Space Grotesk';font-size:20px;display:block;line-height:1;color:#fff}
+  .buybar .pr span{font-size:11px;color:var(--muted)}
+  .buybar a{background:linear-gradient(180deg,var(--ember-hot),var(--ember));color:#fff;font-weight:700;text-decoration:none;padding:13px 22px;border-radius:12px;font-family:'Space Grotesk';font-size:15px;box-shadow:0 8px 22px rgba(242,82,31,.5)}
+
+  /* live activity toast */
+  #toast{position:fixed;left:16px;bottom:84px;z-index:75;display:flex;align-items:center;gap:11px;
+    background:rgba(20,15,12,.92);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:14px;
+    padding:11px 15px 11px 13px;box-shadow:0 16px 40px rgba(0,0,0,.5);max-width:260px;
+    opacity:0;transform:translateY(14px) scale(.96);transition:.4s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+  #toast.show{opacity:1;transform:none}
+  #toast .t-dot{flex:0 0 9px;height:9px;border-radius:50%;background:var(--moss);box-shadow:0 0 0 0 rgba(52,199,154,.6);animation:pulse 2s infinite}
+  #toast b{display:block;font-size:13px;color:#fff;font-family:'Space Grotesk'}
+  #toast span{font-size:11.5px;color:var(--muted)}
+
+  @media(min-width:600px){
+    .mech .three,.pain-list,.tst-grid{grid-template-columns:1fr 1fr}
+    .mech .three .mcard:last-child{grid-column:1/-1}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .reveal{opacity:1;transform:none}
+    .hero h1 .typed{border-right:none}
+  }
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+<div id="cursor"></div>
+
+<!-- TOP BAR -->
+<div class="topbar" id="topbar">
+  <div class="wrap">
+    <div class="brand"><span class="spark">✦</span> Claude Express</div>
+    <a href="#comprar" class="mini-cta">Quiero mi sistema</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero" id="hero">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <canvas id="fx"></canvas>
+  <div class="wrap">
+    <span class="eyebrow reveal"><span class="dot"></span> Esta página la generó una IA — no fue ChatGPT</span>
+    <h1 class="reveal d1">Tu infoproducto, tus anuncios y tu campaña<br><span class="typed grad" id="typed"></span></h1>
+    <p class="sub reveal d2">Mientras pagas <b>Canva + CapCut + Gamma + ChatGPT</b> por separado y gastas una fortuna, una sola herramienta puede hacer todo el trabajo. Tú diriges y, en pocas horas, tienes todo publicado y te ahorras un montón de dinero. <b>Todo sin saber nada de IA.</b></p>
+
+    <div class="gen-card reveal d2" aria-hidden="true">
+      <div class="line"><span class="ok">✓</span> Generando infoproducto completo… <span class="t">0:41</span></div>
+      <div class="line"><span class="ok">✓</span> Armando creativo + subtítulos + hook… <span class="t">0:58</span></div>
+      <div class="line"><span class="ok">✓</span> Estructurando campaña de Meta (testeo + escala)… <span class="t">1:12</span></div>
+    </div>
+
+    <div class="cta-row reveal d3">
+      <a href="#comprar" class="cta magnetic">Quiero armar mi sistema <span class="sm">Acceso inmediato · Empieza hoy mismo</span></a>
+      <span class="undercta">✦ Paso a paso · ✦ Sin experiencia previa · ✦ Una sola tarde</span>
+    </div>
+  </div>
+</header>
+
+<!-- VSL -->
+<section class="vsl" id="vslSection" hidden>
+  <div class="wrap">
+    <div class="head reveal">
+      <p class="kicker">La prueba eres tú</p>
+      <h2 class="title">Este anuncio lo hizo la IA. Y tú vas a poder hacer los tuyos igual.</h2>
+    </div>
+    <div class="frame reveal" id="vslFrame"></div>
+    <p class="proof-note reveal">Si este anuncio te trajo hasta aquí, ya viste el sistema funcionando. Ahora aprendes a hacerlo tú.</p>
+    <div class="cta-row vcta reveal">
+      <a href="#comprar" class="cta magnetic">Quiero armar mi sistema <span class="sm">Acceso inmediato · Empieza hoy mismo</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- REPLACE STRIP -->
+<div class="replace">
+  <div class="wrap">
+    <p class="lbl reveal">DEJA DE PAGAR 4 SUSCRIPCIONES</p>
+    <div class="tools reveal d1">
+      <span class="tool">Canva</span>
+      <span class="tool">CapCut</span>
+      <span class="tool">Gamma</span>
+      <span class="tool">ChatGPT Plus</span>
+    </div>
+    <div class="arrowto">↓</div>
+    <span class="one reveal d2"><span class="spark" style="color:#fff">✦</span> Una sola IA hace todo</span>
+  </div>
+</div>
+
+<!-- PAIN -->
+<section class="pain">
+  <div class="wrap">
+    <p class="kicker reveal">El problema real</p>
+    <h2 class="title reveal">Pagas 4 suscripciones, abres 5 apps… y sigues <span class="hl">sin vender NADA.</span></h2>
+    <p class="lead reveal d1">No es falta de ganas. Te venden cada herramienta por separado para que nunca termines: una para el video, otra para el texto, otra para la página. Saltas entre apps, se te va la tarde y el producto sigue sin existir.</p>
+    <div class="pain-list">
+      <div class="pain-item glass reveal" data-tilt><span class="x">✕</span><p><b>El infoproducto</b> te traba semanas: no sabes qué incluir ni cómo armarlo.</p></div>
+      <div class="pain-item glass reveal d1" data-tilt><span class="x">✕</span><p><b>Los creativos</b> en Canva + CapCut te comen la tarde y siguen sin tener hooks que frenen el scroll.</p></div>
+      <div class="pain-item glass reveal" data-tilt><span class="x">✕</span><p><b>La campaña de Meta</b> es un laberinto: presupuesto, públicos, testeo… y arrancas a ciegas.</p></div>
+      <div class="pain-item glass reveal d1" data-tilt><span class="x">✕</span><p><b>Pagas 4 suscripciones</b> todos los meses antes de haber vendido un solo producto.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- MECHANISM -->
+<section class="mech">
+  <div class="wrap">
+    <p class="kicker reveal">El método</p>
+    <h2 class="title reveal">Claude Express: <span class="grad">1 herramienta, 3 salidas listas.</span></h2>
+    <p class="lead reveal d1">No es "aprender IA". Es seguir un paso a paso donde la IA produce las 3 piezas que necesitas para salir a vender — y tú solo das la orden y eliges.</p>
+    <div class="three">
+      <div class="mcard glass reveal" data-tilt>
+        <div class="num">01 / Creativos</div>
+        <h3>Anuncios que venden, en minutos</h3>
+        <p>Generas el creativo, le pones subtítulos y un hook que frena el scroll — en modo automático. El mismo tipo de anuncio con el que llegaste a esta página.</p>
+        <span class="tag">video + subtítulos + hook</span>
+      </div>
+      <div class="mcard glass reveal d1" data-tilt>
+        <div class="num">02 / Producto</div>
+        <h3>Tu infoproducto de cero</h3>
+        <p>La IA te arma el infoproducto completo, del mismo nivel que lo que estás viendo ahora. Estructura, contenido y diseño, listo para entregar.</p>
+        <span class="tag">ebook + bonos + entregable</span>
+      </div>
+      <div class="mcard glass reveal d2" data-tilt>
+        <div class="num">03 / Campaña</div>
+        <h3>Tu campaña de Meta diagramada</h3>
+        <p>Estructura de testeo y de escala armada con la IA. Sabes exactamente qué cargar en el Administrador de Anuncios para salir a probar hoy.</p>
+        <span class="tag">testeo + escala</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline">
+  <div class="wrap">
+    <p class="kicker reveal">En una sola tarde</p>
+    <h2 class="title reveal">De cero a tu sistema listo en menos de 3 horas.</h2>
+    <div class="tl-wrap" id="tlWrap">
+      <div class="tl-line" id="tlLine"></div>
+      <div class="tl-row reveal"><div class="tl-dot"></div><div class="tl-time">0:00</div><div class="tl-body"><h3>Eliges tu idea</h3><p>Te guiamos a definir qué vender y a quién. El paso que a todos los traba, resuelto.</p></div></div>
+      <div class="tl-row reveal"><div class="tl-dot"></div><div class="tl-time">0:45</div><div class="tl-body"><h3>Tu infoproducto, creado</h3><p>La IA te entrega el producto completo, listo para subir a tu checkout.</p></div></div>
+      <div class="tl-row reveal"><div class="tl-dot"></div><div class="tl-time">1:30</div><div class="tl-body"><h3>Tus creativos, armados</h3><p>Anuncios con subtítulos y hooks automáticos, listos para subir a Meta.</p></div></div>
+      <div class="tl-row reveal"><div class="tl-dot"></div><div class="tl-time">2:30</div><div class="tl-body"><h3>Tu campaña, diagramada</h3><p>Estructura de testeo y escala lista. Tu sistema queda listo para salir a vender.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="tst">
+  <div class="wrap">
+    <p class="kicker reveal">Lo que dicen los alumnos</p>
+    <h2 class="title reveal">Gente común que ya armó su sistema.</h2>
+    <p class="lead reveal d1">Sin promesas de hacerse rico de la noche a la mañana. Esto es lo que pasa cuando sigues el paso a paso.</p>
+    <div class="tst-grid">
+      <div class="tcard glass reveal" data-tilt>
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Llevaba meses con la idea en la cabeza y nunca arrancaba. En una tarde tenía el infoproducto armado y los primeros creativos listos. No es magia, hay que seguir los pasos, pero por fin salí de la parálisis."</p>
+        <div class="who"><div class="av">MG</div><div class="nm"><b>Mariana G.</b><span>Córdoba, Argentina</span></div></div>
+      </div>
+      <div class="tcard glass reveal d1" data-tilt>
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Lo que más me sirvió fue dejar de saltar entre Canva, CapCut y ChatGPT. Tener todo en un solo flujo me ahorró horas y, de paso, dos suscripciones que pagaba casi sin usar."</p>
+        <div class="who"><div class="av">DR</div><div class="nm"><b>Diego R.</b><span>Lima, Perú</span></div></div>
+      </div>
+      <div class="tcard glass reveal" data-tilt>
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Soy cero técnica y me daba miedo la parte de la campaña de Meta. El paso a paso es claro: entendí qué cargar y por qué. Todavía estoy testeando, pero ya tengo la estructura corriendo."</p>
+        <div class="who"><div class="av">VS</div><div class="nm"><b>Valentina S.</b><span>Bogotá, Colombia</span></div></div>
+      </div>
+      <div class="tcard glass reveal d1" data-tilt>
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Había probado con ChatGPT solo y me daba cosas genéricas. La diferencia acá son las órdenes exactas: los creativos me salieron mucho más usables. El pack de prompts lo uso casi todos los días."</p>
+        <div class="who"><div class="av">AM</div><div class="nm"><b>Andrés M.</b><span>Guadalajara, México</span></div></div>
+      </div>
+      <div class="tcard glass reveal" data-tilt>
+        <div class="stars">★★★★★</div>
+        <p class="quote">"Me trabé un poco al principio con el primer anuncio, pero volví a ver el módulo y lo resolví. Lo del anti-rechazo me salvó: antes Meta me rechazaba todo y esta vez me lo aprobaron a la primera."</p>
+        <div class="who"><div class="av">CP</div><div class="nm"><b>Carolina P.</b><span>Montevideo, Uruguay</span></div></div>
+      </div>
+      <div class="tcard glass reveal d1" data-tilt>
+        <div class="stars">★★★★★</div>
+        <p class="quote">"No esperaba terminar el mismo día y casi lo logro; me quedó la campaña para la mañana siguiente. Para lo que cuesta, lo que te llevas es bastante más de lo que imaginas."</p>
+        <div class="who"><div class="av">ST</div><div class="nm"><b>Sebastián T.</b><span>Santiago, Chile</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFER STACK -->
+<section class="offer">
+  <div class="wrap">
+    <p class="kicker reveal">Qué te llevas</p>
+    <h2 class="title reveal">Todo el sistema, paso a paso.</h2>
+    <div class="stack glass reveal d1">
+      <div class="stack-row"><div class="l"><b>Módulo 1 — Creativos que venden</b><span>Anuncios, subtítulos y hooks en modo automático</span></div><div class="v"><span class="strike">US$ 47</span></div></div>
+      <div class="stack-row"><div class="l"><b>Módulo 2 — Tu infoproducto de cero</b><span>Del ebook a los bonos, listo para entregar</span></div><div class="v"><span class="strike">US$ 47</span></div></div>
+      <div class="stack-row"><div class="l"><b>Módulo 3 — Campañas de Meta</b><span>Estructura de testeo + escala con IA</span></div><div class="v"><span class="strike">US$ 47</span></div></div>
+      <div class="stack-row"><div class="l"><b>Acceso de por vida + actualizaciones</b><span>Las herramientas de IA cambian; el curso también</span></div><div class="v"><span class="strike">US$ 30</span></div></div>
+      <div class="stack-row"><div class="l"><b>🎁 Bono 1 — Pack de 50 Prompts Maestros</b><span>Órdenes listas para copiar y pegar</span></div><div class="v"><span class="strike">US$ 27</span> GRATIS</div></div>
+      <div class="stack-row"><div class="l"><b>🎁 Bono 2 — Anti-rechazo de Meta</b><span>Tus anuncios aprobados a la primera</span></div><div class="v"><span class="strike">US$ 57</span> GRATIS</div></div>
+      <div class="stack-total"><span class="tl-lbl">Valor real</span><span class="tl-val"><span class="strike">US$ 255</span> &nbsp;<span class="js-price">US$ 19</span></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ORDER BUMPS / CHECKOUT PREVIEW -->
+<section class="bumps" id="comprar">
+  <div class="wrap">
+    <p class="kicker reveal">Completa tu pedido</p>
+    <h2 class="title reveal">Todo incluido. Sin extras que pagar.</h2>
+    <p class="lead reveal d1">Tu compra incluye el curso completo <b>más 2 bonos de regalo</b> — sin costo adicional.</p>
+
+    <div class="checkout-card reveal d1">
+      <div class="co-head"><span class="spark" style="color:#fff">✦</span> Tu pedido</div>
+      <div class="co-base">
+        <div class="nm"><b>Claude Express — Curso completo</b><span>3 módulos · acceso de por vida</span></div>
+        <div class="pr"><span class="strike js-price-was">US$ 97</span> &nbsp;<b class="js-price">US$ 19</b></div>
+      </div>
+      <div class="bono">
+        <div class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#06281e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="info">
+          <span class="flag">🎁 Bono incluido</span>
+          <b>Pack de 50 Prompts Maestros</b>
+          <p>Las órdenes exactas para copiar y pegar. Pegas el prompt y la IA genera el creativo, el infoproducto o la campaña. Cero página en blanco.</p>
+          <span class="price"><span class="was">US$ 27</span> <b>GRATIS</b></span>
+        </div>
+      </div>
+      <div class="bono">
+        <div class="box"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#06281e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="info">
+          <span class="flag">🎁 Bono incluido</span>
+          <b>Anti-rechazo: tus anuncios aprobados por Meta a la primera</b>
+          <p>Un solo error de redacción y Meta te rechaza el anuncio o te frena la cuenta. Te damos las fórmulas exactas para que tus creativos pasen la revisión a la primera y no pierdas ni un día. El seguro de todo tu negocio.</p>
+          <span class="price"><span class="was">US$ 57</span> <b>GRATIS</b></span>
+        </div>
+      </div>
+      <div class="co-total">
+        <span class="lbl">Total hoy</span>
+        <span class="amt" id="total">US$ 19</span>
+      </div>
+      <div class="co-foot">
+        <a href="#" class="cta magnetic" id="buyBtn">Comprar ahora <span class="sm">Pago seguro · Acceso inmediato · Garantía de 7 días</span></a>
+        <p class="undercta" style="margin-top:12px">Hotmart convierte el precio a tu moneda local automáticamente.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GUARANTEE -->
+<section class="guarantee">
+  <div class="wrap">
+    <p class="kicker reveal">Sin riesgo</p>
+    <div class="gua-card glass reveal d1">
+      <div class="gua-seal">7 DÍAS<br>GARANTÍA</div>
+      <div>
+        <h3>Pruébalo entero. Si no es para ti, te devolvemos todo.</h3>
+        <p>Tienes 7 días para recorrer el curso completo. Si sientes que no te sirve, escribes un correo y te reintegramos el 100%. Sin vueltas y sin preguntas incómodas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- URGENCY -->
+<section class="urgency">
+  <div class="wrap">
+    <p class="kicker reveal" style="color:#FFC9B5">Precio de lanzamiento</p>
+    <h2 class="title reveal">Quedan <span id="cuposNum">37</span> cupos a <span class="js-price">US$ 19</span></h2>
+    <div class="cuposBig" id="cuposBig">37 / 50</div>
+    <div class="bar"><i id="cuposBar" style="width:74%"></i></div>
+    <p>Cuando se completan los cupos, el precio vuelve a <span class="js-price-was">US$ 97</span>.</p>
+    <div class="cta-row" style="margin-top:26px">
+      <a href="#comprar" class="cta magnetic">Tomar mi cupo a <span class="js-price">US$ 19</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="wrap">
+    <p class="kicker reveal">Antes de que preguntes</p>
+    <h2 class="title reveal">Lo que todos quieren saber.</h2>
+    <details class="q glass reveal"><summary>No sé nada de IA. ¿Igual puedo? <span class="ic">+</span></summary><div class="a">Sí, está hecho para eso. El curso es un paso a paso en simples instrucciones: tú das la orden, la IA hace el trabajo pesado. No necesitas saber programar ni tener experiencia previa.</div></details>
+    <details class="q glass reveal"><summary>Ya probé ChatGPT y no me dio resultados. <span class="ic">+</span></summary><div class="a">Porque ChatGPT genérico no arma una página entera, un infoproducto completo ni un creativo listo. Aquí aprendes a usar una IA pensada para producir esas piezas, con las órdenes correctas. La diferencia está en el método, no en pedirle cosas sueltas.</div></details>
+    <details class="q glass reveal"><summary>¿Cuánto tardo en tener todo listo? <span class="ic">+</span></summary><div class="a">El sistema está diseñado para que armes tu infoproducto, tus creativos y tu campaña en una sola tarde — menos de 3 horas siguiendo los pasos. Tu ritmo puede variar, pero esa es la idea.</div></details>
+    <details class="q glass reveal"><summary>¿Esto me garantiza ganar dinero? <span class="ic">+</span></summary><div class="a">No. Ningún curso serio puede garantizarte ingresos. Lo que te damos es el sistema y el paso a paso para dejar tu infoproducto, tus creativos y tu campaña listos para salir a vender. Los resultados dependen de tu nicho, tu oferta y la inversión que hagas en publicidad.</div></details>
+    <details class="q glass reveal"><summary>¿Cómo accedo después de comprar? <span class="ic">+</span></summary><div class="a">El acceso es inmediato. Apenas se confirma el pago, recibes un correo con tus datos de ingreso al curso. Si algo falla, escribes a soporte y lo resolvemos.</div></details>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section class="final">
+  <div class="wrap">
+    <p class="kicker reveal" style="color:#FFC9B5">Última llamada</p>
+    <h2 class="title reveal">El sistema ya funcionó contigo. Ahora hazlo tuyo.</h2>
+    <p class="reveal d1">Este anuncio te trajo hasta aquí. Imagina lo que puedes hacer cuando seas tú quien los crea.</p>
+    <div class="cta-row reveal d1">
+      <a href="#comprar" class="cta magnetic">Empezar ahora a <span class="js-price">US$ 19</span> <span class="sm">Acceso inmediato · Garantía de 7 días</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <p class="disc"><b>Aviso:</b> Claude Express es un curso independiente sobre el uso de herramientas de inteligencia artificial. No está afiliado, patrocinado ni respaldado por Anthropic ni por ningún proveedor de IA mencionado. Este producto no garantiza ingresos ni resultados económicos: los resultados dependen del esfuerzo individual, el nicho, la oferta y la inversión publicitaria de cada persona. Las menciones de tiempos y herramientas son referenciales.</p>
+    <p>© <span id="year"></span> Claude Express · <a href="#">Términos</a> · <a href="#">Privacidad</a> · <a href="#">Soporte</a></p>
+  </div>
+</footer>
+
+<!-- STICKY BUY BAR -->
+<div class="buybar" id="buybar">
+  <div class="pr"><b id="barTotal">US$ 19</b><span>Precio de lanzamiento</span></div>
+  <a href="#comprar">Quiero mi sistema</a>
+</div>
+
+<!-- LIVE ACTIVITY -->
+<div id="toast"></div>
+
+<script>
+/* ===== Variante B ===== */
+var AB_VARIANT = 'lp_b';
+try{ document.cookie='ab=b;path=/;max-age=2592000;samesite=lax'; }catch(e){}
+
+/* ===== Config Supabase (precios y demás vienen del panel /admin) ===== */
+const LP_API = 'https://yopxitmcirrcvrvltfai.supabase.co/functions/v1/lp-api';
+const LP_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlvcHhpdG1jaXJyY3Zydmx0ZmFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0MzUwMzksImV4cCI6MjA5NTAxMTAzOX0.5iwp6EcFAnl2L1_Mb4ZdGUQP71wpui7Wfjderst2Rqk';
+let BASE_PRICE = 19;
+let HOTMART_URL = '';
+let PIXEL_ON = false;
+
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ---- typewriter hero ---- */
+(function(){
+  const el = document.getElementById('typed');
+  const words = ['en una tarde.', 'sin saber de IA.', 'en simples pasos.'];
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){ el.textContent = 'en una tarde.'; el.style.borderRight='none'; return; }
+  let w=0,c=0,del=false;
+  (function tick(){
+    const word = words[w];
+    el.textContent = word.slice(0,c);
+    if(!del){ c++; if(c>word.length){ del=true; setTimeout(tick,1400); return; } }
+    else { c--; if(c===0){ del=false; w=(w+1)%words.length; } }
+    setTimeout(tick, del?40:75);
+  })();
+})();
+
+/* ---- total ---- */
+const totalEl = document.getElementById('total');
+const barTotal = document.getElementById('barTotal');
+function recalc(){
+  const txt = (document.querySelector('.js-price') && document.querySelector('.js-price').textContent) || ('US$ ' + BASE_PRICE);
+  if(totalEl) totalEl.textContent = txt;
+  if(barTotal) barTotal.textContent = txt;
+}
+
+/* ---- buy button: a Hotmart reenviando el rastro de Meta + tag de variante. Sin AddToCart (lo hace Hotmart). ---- */
+document.getElementById('buyBtn').addEventListener('click', function(e){
+  e.preventDefault();
+  const dest = lpBuildCheckoutUrl(HOTMART_URL);
+  if(dest){ window.location.href = dest; }
+  else { alert('Falta configurar el link de Hotmart en el panel /admin'); }
+});
+
+function lpBuildCheckoutUrl(base){
+  if(!base) return '';
+  try{
+    var u = new URL(base);
+    var incoming = new URLSearchParams(location.search);
+    incoming.forEach(function(v,k){ if(v && !u.searchParams.has(k)) u.searchParams.set(k, v); });
+    var fbp = lpCookie('_fbp');
+    var fbc = lpCookie('_fbc');
+    var fbclid = incoming.get('fbclid');
+    if(!fbc && fbclid) fbc = 'fb.1.' + Date.now() + '.' + fbclid;
+    if(fbp && !u.searchParams.has('_fbp')) u.searchParams.set('_fbp', fbp);
+    if(fbc && !u.searchParams.has('_fbc')) u.searchParams.set('_fbc', fbc);
+    if(!u.searchParams.has('sck')) u.searchParams.set('sck', AB_VARIANT); // tag de variante A/B para medir en Hotmart
+    return u.toString();
+  }catch(e){ return base; }
+}
+
+/* ---- contador de cupos ---- */
+(function(){
+  const TOTAL = 50, FLOOR = 11;
+  let store;
+  try { store = window.localStorage; const k='__t'; store.setItem(k,'1'); store.removeItem(k); }
+  catch(e){ store = null; }
+  const KEY = 'ce_cupos_v1';
+  const today = new Date().toISOString().slice(0,10);
+  let left, saved = null;
+  try { saved = store && JSON.parse(store.getItem(KEY)); } catch(e){ saved = null; }
+  if(saved && saved.d === today){ left = saved.n; }
+  else { const h = new Date().getHours(); left = Math.max(FLOOR, 41 - Math.floor(h/2)); }
+  if(!sessionStorage.getItem('ce_seen')){ left = Math.max(FLOOR, left - 1); try{ sessionStorage.setItem('ce_seen','1'); }catch(e){} }
+  try{ store && store.setItem(KEY, JSON.stringify({d:today,n:left})); }catch(e){}
+  document.getElementById('cuposNum').textContent = left;
+  document.getElementById('cuposBig').textContent = left + ' / ' + TOTAL;
+  document.getElementById('cuposBar').style.width = Math.round(left/TOTAL*100) + '%';
+})();
+
+/* ---- top bar + sticky buy bar ---- */
+const topbar = document.getElementById('topbar');
+const buybar = document.getElementById('buybar');
+const checkout = document.getElementById('comprar');
+window.addEventListener('scroll', ()=>{
+  const y = window.scrollY;
+  topbar.classList.toggle('scrolled', y>520);
+  const coTop = checkout.getBoundingClientRect().top;
+  buybar.classList.toggle('show', y>620 && coTop>200);
+}, {passive:true});
+
+/* ===== CONFIG + PIXEL + TRACKING ===== */
+function lpUuid(){ return (crypto && crypto.randomUUID) ? crypto.randomUUID() : 'x'+Date.now()+Math.random().toString(16).slice(2); }
+function lpCookie(n){ const m = document.cookie.match('(^|;)\\s*'+n+'\\s*=\\s*([^;]+)'); return m ? m.pop() : ''; }
+function lpQp(n){ try{ return new URLSearchParams(location.search).get(n) || ''; }catch(e){ return ''; } }
+function lpSid(){ let s=''; try{ s=localStorage.getItem('lp_sid'); if(!s){ s=lpUuid(); localStorage.setItem('lp_sid',s);} }catch(e){ s=s||lpUuid(); } return s; }
+function lpNum(str){ const m=String(str||'').replace(/[^0-9.,]/g,'').replace(',','.'); const n=parseFloat(m); return isNaN(n)?BASE_PRICE:Math.round(n); }
+
+function lpApi(action, body){
+  return fetch(LP_API, {
+    method:'POST', keepalive:true,
+    headers:{'Content-Type':'application/json','apikey':LP_ANON,'Authorization':'Bearer '+LP_ANON},
+    body: JSON.stringify(Object.assign({action:action}, body||{}))
+  }).then(function(r){ return r.json(); });
+}
+function lpTrack(type, eventId){
+  return lpApi('track', {
+    type:type, event_id:eventId, session_id:lpSid(),
+    url:location.href, referrer:document.referrer,
+    utm_source:lpQp('utm_source'), utm_medium:lpQp('utm_medium'), utm_campaign:lpQp('utm_campaign'),
+    fbclid:lpQp('fbclid'), fbp:lpCookie('_fbp'), fbc:lpCookie('_fbc')
+  }).catch(function(){});
+}
+function lpInitPixel(id){
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', id);
+}
+function lpRenderVsl(url, type){
+  if(!url) return;
+  var sec=document.getElementById('vslSection'), frame=document.getElementById('vslFrame');
+  var html=''; type=(type||'auto').toLowerCase();
+  var yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|v\/|embed\/|shorts\/|live\/))([\w-]{6,})/);
+  var vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  function ytEmbed(id){ return '<iframe src="https://www.youtube.com/embed/'+id+'?rel=0&modestbranding=1&playsinline=1" title="VSL" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'; }
+  function vmEmbed(id){ return '<iframe src="https://player.vimeo.com/video/'+id+'" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>'; }
+  if(type==='youtube'){ html = ytEmbed(yt ? yt[1] : (url.match(/[\w-]{6,}/)||[''])[0]); }
+  else if(type==='vimeo'){ html = vmEmbed(vm ? vm[1] : (url.match(/\d+/)||[''])[0]); }
+  else if(type==='mp4' || (type==='auto' && /\.mp4(\?|$)/i.test(url))){ html='<video controls playsinline preload="metadata" src="'+url+'"></video>'; }
+  else if(yt){ html = ytEmbed(yt[1]); }
+  else if(vm){ html = vmEmbed(vm[1]); }
+  else { html='<iframe src="'+url+'" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen></iframe>'; }
+  frame.innerHTML=html; sec.hidden=false;
+  if(window.__revealObserve) document.querySelectorAll('#vslSection .reveal').forEach(window.__revealObserve);
+}
+
+(function lpBoot(){
+  lpApi('get_public_config').then(function(r){
+    var c = (r && r.config) || {};
+    if(c.price){ BASE_PRICE = lpNum(c.price); document.querySelectorAll('.js-price').forEach(function(el){ el.textContent=c.price; }); recalc(); }
+    if(c.price_original){ document.querySelectorAll('.js-price-was').forEach(function(el){ el.textContent=c.price_original; }); }
+    HOTMART_URL = c.hotmart_url || '';
+    if(c.vsl_url) lpRenderVsl(c.vsl_url, c.vsl_type);
+    if(c.pixel_enabled && c.meta_pixel_id){ lpInitPixel(c.meta_pixel_id); PIXEL_ON=true; }
+    firePageView();
+  }).catch(function(){ firePageView(); });
+  function firePageView(){
+    var pvId = lpUuid();
+    if(PIXEL_ON && window.fbq) fbq('track','PageView',{},{eventID:pvId});
+    lpTrack('page_view', pvId);
+  }
+})();
+
+/* =====================================================================
+   MOTOR DE EFECTOS (vanilla, liviano, respeta reduced-motion)
+   ===================================================================== */
+(function(){
+  var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var FINE = matchMedia('(pointer:fine)').matches;
+
+  /* reveal on scroll */
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.12, rootMargin:'0px 0px -8% 0px'});
+  window.__revealObserve = function(el){ io.observe(el); };
+  document.querySelectorAll('.reveal').forEach(window.__revealObserve);
+
+  /* scroll progress */
+  var prog=document.getElementById('prog');
+  addEventListener('scroll', function(){
+    var h=document.documentElement, max=h.scrollHeight-h.clientHeight;
+    prog.style.transform='scaleX('+(max>0?h.scrollTop/max:0)+')';
+  }, {passive:true});
+
+  /* timeline draw */
+  var tlLine=document.getElementById('tlLine'), tlWrap=document.getElementById('tlWrap');
+  if(tlLine && tlWrap){
+    var tio=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ tlLine.style.height=(tlWrap.offsetHeight-8)+'px'; tio.unobserve(e.target);} });
+    },{threshold:.25});
+    tio.observe(tlWrap);
+  }
+
+  /* count-up */
+  function countUp(el){
+    var target=parseInt(el.dataset.count,10)||0, t0=null, dur=1100;
+    function step(t){ if(!t0)t0=t; var p=Math.min((t-t0)/dur,1); el.textContent=Math.round(target*(1-Math.pow(1-p,3))); if(p<1)requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+  }
+  var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){countUp(e.target);io2.unobserve(e.target);}})},{threshold:.6});
+  document.querySelectorAll('[data-count]').forEach(function(el){io2.observe(el);});
+
+  if(RM) return; // de acá para abajo, solo efectos de movimiento
+
+  /* cursor glow + aura (solo puntero fino) */
+  if(FINE){
+    var cg=document.getElementById('cursor'); cg.style.display='block';
+    var cx=innerWidth/2, cy=innerHeight/2, tx=cx, ty=cy, raf=0;
+    addEventListener('pointermove', function(e){
+      tx=e.clientX; ty=e.clientY;
+      document.documentElement.style.setProperty('--mx', e.clientX+'px');
+      document.documentElement.style.setProperty('--my', e.clientY+'px');
+      if(!raf) raf=requestAnimationFrame(loop);
+    }, {passive:true});
+    function loop(){
+      cx+=(tx-cx)*.18; cy+=(ty-cy)*.18;
+      cg.style.transform='translate('+(cx-150)+'px,'+(cy-150)+'px)';
+      raf=(Math.abs(tx-cx)>.5||Math.abs(ty-cy)>.5)?requestAnimationFrame(loop):0;
+    }
+
+    /* tilt 3D */
+    document.querySelectorAll('[data-tilt]').forEach(function(el){
+      el.addEventListener('pointermove', function(e){
+        var r=el.getBoundingClientRect();
+        var px=(e.clientX-r.left)/r.width-.5, py=(e.clientY-r.top)/r.height-.5;
+        el.style.transform='perspective(820px) rotateX('+(-py*5).toFixed(2)+'deg) rotateY('+(px*7).toFixed(2)+'deg) translateY(-4px)';
+      });
+      el.addEventListener('pointerleave', function(){ el.style.transform=''; });
+    });
+
+    /* magnetic buttons */
+    document.querySelectorAll('.magnetic').forEach(function(el){
+      el.addEventListener('pointermove', function(e){
+        var r=el.getBoundingClientRect();
+        var mx=e.clientX-r.left-r.width/2, my=e.clientY-r.top-r.height/2;
+        el.style.transform='translate('+(mx*.16).toFixed(1)+'px,'+(my*.22).toFixed(1)+'px)';
+      });
+      el.addEventListener('pointerleave', function(){ el.style.transform=''; });
+    });
+  }
+
+  /* hero canvas: partículas + constelación que reacciona al mouse */
+  (function(){
+    var c=document.getElementById('fx'); if(!c) return;
+    var hero=document.getElementById('hero'), ctx=c.getContext('2d');
+    var DPR=Math.min(devicePixelRatio||1,2), W=0,H=0, parts=[], mouse={x:-9999,y:-9999}, running=true;
+    function size(){ W=c.width=hero.offsetWidth*DPR; H=c.height=hero.offsetHeight*DPR; c.style.width=hero.offsetWidth+'px'; c.style.height=hero.offsetHeight+'px'; }
+    function init(){ size(); var n=Math.min(Math.round(hero.offsetWidth/16),68); parts=[]; for(var i=0;i<n;i++){ parts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.25*DPR,vy:(Math.random()-.5)*.25*DPR,r:(Math.random()*1.5+.6)*DPR}); } }
+    hero.addEventListener('pointermove', function(e){ var r=hero.getBoundingClientRect(); mouse.x=(e.clientX-r.left)*DPR; mouse.y=(e.clientY-r.top)*DPR; }, {passive:true});
+    hero.addEventListener('pointerleave', function(){ mouse.x=mouse.y=-9999; });
+    var maxLink=8000*DPR*DPR;
+    function draw(){
+      if(!running) return;
+      ctx.clearRect(0,0,W,H);
+      for(var i=0;i<parts.length;i++){
+        var p=parts[i]; p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0||p.x>W)p.vx*=-1; if(p.y<0||p.y>H)p.vy*=-1;
+        var dx=mouse.x-p.x, dy=mouse.y-p.y, d2=dx*dx+dy*dy;
+        if(d2<16000*DPR*DPR){ p.x+=dx*0.0022; p.y+=dy*0.0022; }
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.283); ctx.fillStyle='rgba(255,150,90,.55)'; ctx.fill();
+      }
+      for(var a=0;a<parts.length;a++){ for(var b=a+1;b<parts.length;b++){
+        var A=parts[a],B=parts[b], ddx=A.x-B.x, ddy=A.y-B.y, dd=ddx*ddx+ddy*ddy;
+        if(dd<maxLink){ var o=(1-dd/maxLink)*.45; ctx.strokeStyle='rgba(242,82,31,'+o.toFixed(3)+')'; ctx.lineWidth=DPR*.55; ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.stroke(); }
+      }}
+      requestAnimationFrame(draw);
+    }
+    var vis=new IntersectionObserver(function(es){ running=es[0].isIntersecting; if(running) requestAnimationFrame(draw); });
+    vis.observe(hero);
+    document.addEventListener('visibilitychange', function(){ running=!document.hidden && hero.getBoundingClientRect().bottom>0; if(running) requestAnimationFrame(draw); });
+    var rsz; addEventListener('resize', function(){ clearTimeout(rsz); rsz=setTimeout(init,200); }, {passive:true});
+    init(); requestAnimationFrame(draw);
+  })();
+
+  /* notificaciones de actividad en vivo */
+  (function(){
+    var box=document.getElementById('toast'); if(!box) return;
+    var people=[['Mariana','Córdoba'],['Diego','Lima'],['Valentina','Bogotá'],['Andrés','Guadalajara'],['Carolina','Montevideo'],['Sebastián','Santiago'],['Lucía','Rosario'],['Mateo','Quito'],['Camila','Medellín'],['Tomás','Asunción'],['Sofía','Guayaquil'],['Bruno','Mendoza']];
+    function show(){
+      var d=people[Math.floor(Math.random()*people.length)], mins=Math.floor(Math.random()*9)+1;
+      box.innerHTML='<div class="t-dot"></div><div><b>'+d[0]+' de '+d[1]+'</b><span>se unió hace '+mins+' min</span></div>';
+      box.classList.add('show'); setTimeout(function(){ box.classList.remove('show'); }, 4800);
+    }
+    setTimeout(function tick(){ show(); setTimeout(tick, 10000+Math.random()*9000); }, 6500);
+  })();
+})();
+</script>
+</body>
+</html>
