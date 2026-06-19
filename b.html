@@ -23,11 +23,13 @@
     --mx:50vw; --my:30vh;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth;overflow-x:hidden}
   body{
     font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);
-    line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;
+    line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;width:100%;
   }
+  /* clip moderno (no rompe position:sticky); fallback a hidden arriba */
+  @supports (overflow:clip){ html,body{overflow-x:clip} }
   /* aura global que sigue el cursor */
   body::before{
     content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
@@ -380,6 +382,15 @@
     .mech .three,.pain-list,.tst-grid{grid-template-columns:1fr 1fr}
     .mech .three .mcard:last-child{grid-column:1/-1}
     .stats .wrap{grid-template-columns:repeat(4,1fr)}
+  }
+  /* mobile: aligerar efectos pesados para que vaya fluido y nada se desborde */
+  @media(max-width:560px){
+    .mesh{animation:none;opacity:.42;inset:-10%;filter:blur(34px)}
+    .orb{filter:blur(54px);opacity:.15}
+    .hero .blob{filter:blur(54px);opacity:.42}
+    .gen-card{max-width:100%}
+    .play input{min-width:0}
+    .boom{overflow-wrap:anywhere}
   }
   @media(prefers-reduced-motion:reduce){
     *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
