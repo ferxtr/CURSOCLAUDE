@@ -1,5 +1,9 @@
 {
   "cleanUrls": true,
+  "rewrites": [
+    { "source": "/LandingB", "destination": "/b.html" },
+    { "source": "/landingb", "destination": "/b.html" }
+  ],
   "headers": [
     {
       "source": "/admin",
