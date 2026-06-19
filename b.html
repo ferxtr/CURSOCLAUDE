@@ -777,6 +777,7 @@ function recalc(){
 /* ---- buy button: a Hotmart reenviando el rastro de Meta + tag de variante. Sin AddToCart (lo hace Hotmart). ---- */
 document.getElementById('buyBtn').addEventListener('click', function(e){
   e.preventDefault();
+  lpTrack('cta_click', lpUuid()); // registra el click de CTA por variante en el panel (keepalive)
   const dest = lpBuildCheckoutUrl(HOTMART_URL);
   if(dest){ window.location.href = dest; }
   else { alert('Falta configurar el link de Hotmart en el panel /admin'); }
@@ -845,7 +846,7 @@ function lpApi(action, body){
 }
 function lpTrack(type, eventId){
   return lpApi('track', {
-    type:type, event_id:eventId, session_id:lpSid(),
+    type:type, event_id:eventId, session_id:lpSid(), variant:'b',
     url:location.href, referrer:document.referrer,
     utm_source:lpQp('utm_source'), utm_medium:lpQp('utm_medium'), utm_campaign:lpQp('utm_campaign'),
     fbclid:lpQp('fbclid'), fbp:lpCookie('_fbp'), fbc:lpCookie('_fbc')

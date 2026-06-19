@@ -173,13 +173,19 @@
 
     <div class="kpis" style="margin-top:16px">
       <div class="kpi"><div class="n" id="kViews">—</div><div class="l">Visitas (PageView)</div><div class="s" id="kViewsToday"></div></div>
-      <div class="kpi"><div class="n" id="kClicks">—</div><div class="l">Clicks CTA (AddToCart)</div><div class="s" id="kClicksToday"></div></div>
+      <div class="kpi"><div class="n" id="kClicks">—</div><div class="l">Clicks CTA (total)</div><div class="s" id="kClicksToday"></div></div>
       <div class="kpi"><div class="n" id="kCtr">—</div><div class="l">Tasa de click (CTR)</div></div>
       <div class="kpi"><div class="n" id="kSessions">—</div><div class="l">Sesiones únicas</div><div class="s" id="kCapi"></div></div>
     </div>
 
     <div class="legend"><span><i style="background:var(--ember)"></i>Visitas</span><span><i style="background:var(--coral-tint)"></i>Clicks CTA</span></div>
     <div class="chart" id="chart"></div>
+
+    <h3 style="font-size:15px;margin:24px 0 4px">CTA por landing — Test A/B <span class="hint" style="font-weight:400">(reparto actual: 20% A · 80% B)</span></h3>
+    <table id="variantTable">
+      <thead><tr><th>Landing</th><th style="text-align:right">Visitas</th><th style="text-align:right">Clicks CTA</th><th style="text-align:right">CTR</th><th style="text-align:right">Sesiones</th></tr></thead>
+      <tbody><tr><td class="muted">—</td></tr></tbody>
+    </table>
 
     <div class="row" style="margin-top:22px;align-items:start">
       <div>
@@ -320,6 +326,20 @@ function renderStats(s){
     chart.appendChild(col);
   });
 
+  // por variante (Test A/B)
+  var vt=$('variantTable').querySelector('tbody'); vt.innerHTML='';
+  var vlabels={a:'🅰️ Landing A',b:'🅱️ Landing B','?':'Sin variante'};
+  var vlist=(s.by_variant||[]).slice().sort(function(a,b){ return String(a.variant).localeCompare(String(b.variant)); });
+  vlist.forEach(function(v){
+    var ctrv=(v.ctr!=null?v.ctr:(v.views?(v.clicks/v.views*100):0));
+    vt.innerHTML += '<tr><td><b>'+(vlabels[v.variant]||v.variant)+'</b></td>'+
+      '<td style="text-align:right">'+(v.views||0).toLocaleString()+'</td>'+
+      '<td style="text-align:right"><span class="pill">'+(v.clicks||0).toLocaleString()+'</span></td>'+
+      '<td style="text-align:right">'+Number(ctrv).toFixed(1)+'%</td>'+
+      '<td style="text-align:right" class="muted">'+(v.sessions||0).toLocaleString()+'</td></tr>';
+  });
+  if(!vlist.length) vt.innerHTML='<tr><td class="muted">Sin datos todavía.</td></tr>';
+
   // country
   var ct=$('countryTable').querySelector('tbody'); ct.innerHTML='';
   (s.by_country||[]).forEach(function(c){
@@ -330,9 +350,10 @@ function renderStats(s){
   // recent
   var rt=$('recentTable').querySelector('tbody'); rt.innerHTML='';
   (s.recent||[]).forEach(function(r){
-    var t = r.type==='add_to_cart' ? '<span class="tag atc">AddToCart</span>' : '<span class="tag pv">PageView</span>';
+    var t = (r.type==='cta_click'||r.type==='add_to_cart') ? '<span class="tag atc">Click CTA</span>' : '<span class="tag pv">PageView</span>';
+    var vtag = r.variant ? ' <span class="tag" style="background:#EEF1F6;color:#3A332C">'+String(r.variant).toUpperCase()+'</span>' : '';
     var when = new Date(r.created_at).toLocaleString();
-    rt.innerHTML += '<tr><td>'+t+'</td><td class="muted">'+(r.country||'??')+'</td><td class="muted" style="font-size:11px">'+when+'</td></tr>';
+    rt.innerHTML += '<tr><td>'+t+vtag+'</td><td class="muted">'+(r.country||'??')+'</td><td class="muted" style="font-size:11px">'+when+'</td></tr>';
   });
   if(!(s.recent||[]).length) rt.innerHTML='<tr><td class="muted">Sin actividad.</td></tr>';
 }
