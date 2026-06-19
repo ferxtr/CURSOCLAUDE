@@ -297,6 +297,25 @@
   .po-line{opacity:0;transform:translateY(8px);transition:.45s;font-size:14.5px;color:var(--muted);padding:6px 0;display:flex;gap:10px;align-items:flex-start}
   .po-line.in{opacity:1;transform:none}
   .po-line b{color:#fff}
+  .po-line .ok{color:#7FE0AC;flex:0 0 auto}
+  .po-badge{display:inline-block;font-family:'JetBrains Mono';font-size:11px;color:var(--ember-hot);background:rgba(242,82,31,.14);border:1px solid rgba(242,82,31,.3);padding:4px 10px;border-radius:999px;margin-bottom:12px}
+  .po-card h4{min-height:1.2em}
+  .po-sub{color:var(--muted);font-size:13.5px;margin-bottom:6px}
+  .po-block{border-top:1px solid var(--line2);padding:13px 0}
+  .po-block:last-of-type{padding-bottom:0}
+  .po-h{font-family:'Space Grotesk';font-weight:600;color:#fff;font-size:13.5px;margin-bottom:9px}
+  .po-ad{display:flex;gap:12px;align-items:center}
+  .po-thumb{flex:0 0 56px;height:74px;border-radius:11px;background:linear-gradient(160deg,#3a2415,#0d0a08);display:grid;place-items:center;color:var(--ember-hot);font-size:22px;border:1px solid var(--line);box-shadow:0 0 22px rgba(242,82,31,.25)}
+  .po-adtxt b{display:block;color:#fff;font-size:14px;margin-bottom:4px;line-height:1.3}
+  .po-adtxt span{font-size:12.5px;color:var(--muted)}
+  .po-line2{font-size:13.5px;color:var(--muted)}
+  .po-foot{margin-top:13px;padding-top:13px;border-top:1px solid var(--line2);font-family:'Space Grotesk';font-weight:600;color:#7fe9c6;font-size:13.5px}
+  .po-think{display:flex;align-items:center;gap:11px;color:var(--muted);font-size:14px;justify-content:center;padding:22px}
+  .po-dots{display:inline-flex;gap:5px}
+  .po-dots i{width:8px;height:8px;border-radius:50%;background:var(--ember-hot);animation:dots 1s infinite ease-in-out}
+  .po-dots i:nth-child(2){animation-delay:.15s}
+  .po-dots i:nth-child(3){animation-delay:.3s}
+  @keyframes dots{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-5px)}}
 
   @media(min-width:600px){
     .mech .three,.pain-list,.tst-grid{grid-template-columns:1fr 1fr}
@@ -837,21 +856,56 @@ function lpRenderVsl(url, type){
     var btn=document.getElementById('ideaBtn'), inp=document.getElementById('ideaIn'), out=document.getElementById('ideaOut');
     if(!btn) return;
     function esc(s){ return String(s).replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]; }); }
+    function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+    function titleCase(s){ return s.replace(/\S+/g,function(w){ return w.charAt(0).toUpperCase()+w.slice(1); }); }
+    function typew(el,text,done){
+      if(RM){ el.textContent=text; if(done)done(); return; }
+      el.textContent=''; var i=0;
+      (function t(){ el.textContent=text.slice(0,i); if(i++<text.length){ setTimeout(t,24); } else if(done){ done(); } })();
+    }
+    var titles=['{X} Express: de cero a tu primer resultado','El Método {X}: paso a paso y sin vueltas','{X} para principiantes: la guía definitiva','Domina {X} en 7 días (aunque arranques de cero)'];
+    var auds=['Para quienes quieren empezar con {x} pero no saben por dónde.','Ideal para principiantes que ya probaron de todo y nada les funcionó.','Para gente ocupada que quiere resultados sin complicarse la vida.'];
+    var mods=['Fundamentos de {x}: lo que de verdad importa','El plan paso a paso (semana 1 a 4)','Los 7 errores que te frenan (y cómo evitarlos)','Plantillas y herramientas listas para usar','Cómo sostener el resultado en el tiempo'];
+    var hooks=['POV: encontraste cómo {x} sin sufrir 👀','Si intentaste {x} y abandonaste, esto es para vos 👇','Nadie te cuenta ESTO sobre {x}…','Probé {x} 30 días y esto fue lo que pasó:'];
     function go(){
-      var idea=((inp.value||'').trim()).slice(0,60)||'tu idea';
-      var L=[
-        ['📘','<b>Infoproducto:</b> "'+esc(idea)+' — Guía Express", 5 módulos + 2 bonos'],
-        ['🎬','<b>Creativo:</b> reel vertical con hook "Si querés '+esc(idea)+', mirá esto 👇" + subtítulos'],
-        ['🎯','<b>Campaña de Meta:</b> 3 públicos de testeo + escala, lista para cargar'],
-        ['🚀','<b>Todo listo para vender</b> — en una sola tarde']
-      ];
-      out.innerHTML='<div class="po-card"><h4>✨ '+esc(idea)+'</h4><div id="poL"></div></div>';
-      var card=out.querySelector('.po-card'), box=document.getElementById('poL');
-      requestAnimationFrame(function(){ card.classList.add('in'); });
-      L.forEach(function(l,i){
-        var d=document.createElement('div'); d.className='po-line'; d.innerHTML='<span>'+l[0]+'</span><span>'+l[1]+'</span>'; box.appendChild(d);
-        setTimeout(function(){ d.classList.add('in'); if(i===L.length-1){ var r=card.getBoundingClientRect(); burstAt(innerWidth/2, Math.min(r.bottom, innerHeight-60)); } }, 360*(i+1));
-      });
+      var raw=((inp.value||'').trim()).replace(/\s+/g,' ').slice(0,60)||'tu idea';
+      var x=raw.toLowerCase(), X=titleCase(raw);
+      var title=pick(titles).replace(/\{X\}/g,X), sub=pick(auds).replace(/\{x\}/g,x), hook=pick(hooks).replace(/\{x\}/g,x);
+      var m=mods.map(function(s){ return s.replace(/\{x\}/g,x); });
+      btn.disabled=true; btn.innerHTML='✨ Generando…';
+      out.innerHTML='<div class="po-think"><span class="po-dots"><i></i><i></i><i></i></span> La IA está creando tu producto…</div>';
+      setTimeout(function(){
+        out.innerHTML='<div class="po-card">'
+          +'<span class="po-badge">✨ Generado por IA · 1.8s</span>'
+          +'<h4 id="poTitle"></h4>'
+          +'<p class="po-sub">'+esc(sub)+'</p>'
+          +'<div class="po-block"><div class="po-h">📦 Tu infoproducto · 5 módulos + 2 bonos</div><div id="poMods"></div></div>'
+          +'<div class="po-block"><div class="po-h">🎬 Tu creativo</div>'
+            +'<div class="po-ad"><div class="po-thumb">▶</div><div class="po-adtxt"><b>'+esc(hook)+'</b>'
+            +'<span>Reel 9:16 · gancho en los primeros 3 seg · subtítulos quemados · CTA final</span></div></div></div>'
+          +'<div class="po-block"><div class="po-h">🎯 Tu campaña de Meta</div>'
+            +'<div class="po-line2">3 conjuntos de testeo (intereses + Lookalike 1% + abierto) → escala con CBO</div></div>'
+          +'<div class="po-foot">🟢 Listo para vender — en una sola tarde · precio sugerido US$ 19–27</div>'
+          +'</div>';
+        var card=out.querySelector('.po-card');
+        requestAnimationFrame(function(){ card.classList.add('in'); });
+        typew(document.getElementById('poTitle'), title, function(){
+          var box=document.getElementById('poMods');
+          m.forEach(function(name,i){
+            var d=document.createElement('div'); d.className='po-line';
+            d.innerHTML='<span class="ok">✓</span><span><b>Módulo '+(i+1)+'</b> · '+esc(name)+'</span>';
+            box.appendChild(d);
+            setTimeout(function(){
+              d.classList.add('in');
+              if(i===m.length-1){
+                var r=card.getBoundingClientRect();
+                if(window.__burst) window.__burst(innerWidth/2, Math.min(r.bottom-40, innerHeight-90));
+                btn.disabled=false; btn.innerHTML='✨ Generar otra';
+              }
+            }, 240*(i+1));
+          });
+        });
+      }, 750);
     }
     btn.addEventListener('click', go);
     inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); go(); } });
