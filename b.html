@@ -272,6 +272,32 @@
   #toast b{display:block;font-size:13px;color:#fff;font-family:'Space Grotesk'}
   #toast span{font-size:11.5px;color:var(--muted)}
 
+  /* ===== MAGIA: cartel con letras que explotan + confeti + playground ===== */
+  .magic{text-align:center;background:radial-gradient(130% 100% at 50% 0%,#2E1407,var(--bg));position:relative;overflow:hidden}
+  .boom{font-family:'Space Grotesk';font-weight:700;font-size:clamp(32px,9vw,62px);letter-spacing:-.02em;line-height:1.04;margin:6px auto 16px;max-width:16ch;min-height:1.1em}
+  .boom .ltr{display:inline-block;opacity:0;transform:translateY(40px) scale(.2) rotate(-14deg);filter:blur(10px);will-change:transform,opacity;
+    background:linear-gradient(100deg,#FFE3B0,var(--amber) 38%,var(--ember-hot) 78%,#FF8A5C);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .boom.go .ltr{animation:pop .62s cubic-bezier(.18,1.5,.4,1) forwards;animation-delay:var(--d)}
+  @keyframes pop{60%{filter:blur(0)}100%{opacity:1;transform:none;filter:blur(0)}}
+  .boom .sp{display:inline-block;width:.42em}
+  #confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:85;display:none}
+  .sprk{position:fixed;width:12px;height:12px;pointer-events:none;z-index:84;border-radius:50%;
+    background:radial-gradient(circle,#FFE6BE,rgba(255,150,80,0) 70%);will-change:transform,opacity;animation:sprk .7s ease-out forwards}
+  @keyframes sprk{0%{opacity:.95;transform:scale(1)}100%{opacity:0;transform:scale(.2) translateY(10px)}}
+  .play{display:flex;gap:10px;max-width:540px;margin:28px auto 0;padding:10px;border-radius:16px;flex-wrap:wrap;align-items:stretch}
+  .play input{flex:1;min-width:190px;background:rgba(0,0,0,.28);border:1px solid var(--line);border-radius:12px;color:#fff;padding:14px 16px;font-size:15px;font-family:inherit}
+  .play input::placeholder{color:#7d7466}
+  .play input:focus{outline:2px solid rgba(242,82,31,.5);border-color:var(--ember)}
+  .play .cta{flex:0 0 auto;flex-direction:row;width:auto;padding:14px 22px;font-size:15px;gap:6px}
+  .play-out{max-width:540px;margin:18px auto 0;text-align:left}
+  .po-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;backdrop-filter:blur(10px);box-shadow:0 0 50px rgba(242,82,31,.2),var(--glow);
+    opacity:0;transform:translateY(14px) scale(.98);transition:.5s cubic-bezier(.2,.8,.2,1)}
+  .po-card.in{opacity:1;transform:none}
+  .po-card h4{font-family:'Space Grotesk';color:#fff;font-size:19px;margin-bottom:10px}
+  .po-line{opacity:0;transform:translateY(8px);transition:.45s;font-size:14.5px;color:var(--muted);padding:6px 0;display:flex;gap:10px;align-items:flex-start}
+  .po-line.in{opacity:1;transform:none}
+  .po-line b{color:#fff}
+
   @media(min-width:600px){
     .mech .three,.pain-list,.tst-grid{grid-template-columns:1fr 1fr}
     .mech .three .mcard:last-child{grid-column:1/-1}
@@ -360,6 +386,20 @@
       <div class="pain-item glass reveal" data-tilt><span class="x">✕</span><p><b>La campaña de Meta</b> es un laberinto: presupuesto, públicos, testeo… y arrancas a ciegas.</p></div>
       <div class="pain-item glass reveal d1" data-tilt><span class="x">✕</span><p><b>Pagas 4 suscripciones</b> todos los meses antes de haber vendido un solo producto.</p></div>
     </div>
+  </div>
+</section>
+
+<!-- MAGIC BANNER + PLAYGROUND -->
+<section class="magic" id="magic">
+  <div class="wrap">
+    <p class="kicker reveal">La parte divertida</p>
+    <h2 class="boom" data-boom="Mira todo lo que puedes hacer"></h2>
+    <p class="lead reveal d1">Escribí cualquier idea y mirá cómo se convierte en un producto listo para vender. Es una demo — pero así de simple se siente.</p>
+    <div class="play glass reveal d1">
+      <input id="ideaIn" type="text" maxlength="60" placeholder="Ej: dieta keto para principiantes" aria-label="Tu idea" />
+      <button id="ideaBtn" class="cta magnetic" type="button">✨ Generar magia</button>
+    </div>
+    <div class="play-out" id="ideaOut"></div>
   </div>
 </section>
 
@@ -575,6 +615,9 @@
   <a href="#comprar">Quiero mi sistema</a>
 </div>
 
+<!-- EFECTOS -->
+<canvas id="confetti"></canvas>
+
 <!-- LIVE ACTIVITY -->
 <div id="toast"></div>
 
@@ -749,6 +792,71 @@ function lpRenderVsl(url, type){
   window.__revealObserve = function(el){ io.observe(el); };
   document.querySelectorAll('.reveal').forEach(window.__revealObserve);
 
+  /* ===== confeti / explosión (one-shot, se apaga solo) ===== */
+  function burstAt(x,y){
+    if(RM) return;
+    var conf=document.getElementById('confetti'); if(!conf) return;
+    var ctx=conf.__c || (conf.__c=conf.getContext('2d'));
+    function size(){ conf.width=innerWidth; conf.height=innerHeight; }
+    if(!conf.__sized){ size(); addEventListener('resize',size,{passive:true}); conf.__sized=true; conf.__p=[]; }
+    conf.style.display='block';
+    var cols=['#FF6A3D','#FFB020','#FFE3B0','#ffffff','#34C79A'];
+    for(var i=0;i<130;i++){ var a=Math.random()*6.283, sp=Math.random()*9+3;
+      conf.__p.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-5,g:.2,life:1,c:cols[i%cols.length],s:Math.random()*5+2,rot:Math.random()*6.28,vr:(Math.random()-.5)*.35}); }
+    if(!conf.__raf) conf.__raf=requestAnimationFrame(function loop(){
+      ctx.clearRect(0,0,conf.width,conf.height); var alive=0, P=conf.__p;
+      for(var i=0;i<P.length;i++){ var p=P[i]; if(p.life<=0) continue; alive++;
+        p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.vx*=.99; p.life-=.012; p.rot+=p.vr;
+        ctx.save(); ctx.globalAlpha=Math.max(p.life,0); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+        ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*1.6); ctx.restore(); }
+      if(alive>0){ conf.__raf=requestAnimationFrame(loop); }
+      else { conf.__raf=0; conf.__p=[]; ctx.clearRect(0,0,conf.width,conf.height); conf.style.display='none'; }
+    });
+  }
+  window.__burst = burstAt;
+
+  /* ===== cartel: "Mira todo lo que puedes hacer" con letras que explotan ===== */
+  document.querySelectorAll('[data-boom]').forEach(function(el){
+    var text=el.getAttribute('data-boom')||''; el.textContent='';
+    text.split('').forEach(function(ch,i){
+      if(ch===' '){ var sp=document.createElement('span'); sp.className='sp'; el.appendChild(sp); return; }
+      var s=document.createElement('span'); s.className='ltr'; s.textContent=ch; s.style.setProperty('--d',(i*0.035).toFixed(3)+'s');
+      if(RM){ s.style.opacity=1; s.style.transform='none'; s.style.filter='none'; }
+      el.appendChild(s);
+    });
+    var bo=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){
+      el.classList.add('go');
+      if(!RM){ var r=el.getBoundingClientRect(); setTimeout(function(){ burstAt(innerWidth/2, r.top+r.height/2); }, text.length*18); }
+      bo.unobserve(el);
+    } }); }, {threshold:.6});
+    bo.observe(el);
+  });
+
+  /* ===== mini-juego: escribí una idea y la IA "la convierte" ante tus ojos ===== */
+  (function(){
+    var btn=document.getElementById('ideaBtn'), inp=document.getElementById('ideaIn'), out=document.getElementById('ideaOut');
+    if(!btn) return;
+    function esc(s){ return String(s).replace(/[<>&"]/g,function(c){return {'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]; }); }
+    function go(){
+      var idea=((inp.value||'').trim()).slice(0,60)||'tu idea';
+      var L=[
+        ['📘','<b>Infoproducto:</b> "'+esc(idea)+' — Guía Express", 5 módulos + 2 bonos'],
+        ['🎬','<b>Creativo:</b> reel vertical con hook "Si querés '+esc(idea)+', mirá esto 👇" + subtítulos'],
+        ['🎯','<b>Campaña de Meta:</b> 3 públicos de testeo + escala, lista para cargar'],
+        ['🚀','<b>Todo listo para vender</b> — en una sola tarde']
+      ];
+      out.innerHTML='<div class="po-card"><h4>✨ '+esc(idea)+'</h4><div id="poL"></div></div>';
+      var card=out.querySelector('.po-card'), box=document.getElementById('poL');
+      requestAnimationFrame(function(){ card.classList.add('in'); });
+      L.forEach(function(l,i){
+        var d=document.createElement('div'); d.className='po-line'; d.innerHTML='<span>'+l[0]+'</span><span>'+l[1]+'</span>'; box.appendChild(d);
+        setTimeout(function(){ d.classList.add('in'); if(i===L.length-1){ var r=card.getBoundingClientRect(); burstAt(innerWidth/2, Math.min(r.bottom, innerHeight-60)); } }, 360*(i+1));
+      });
+    }
+    btn.addEventListener('click', go);
+    inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); go(); } });
+  })();
+
   /* scroll progress */
   var prog=document.getElementById('prog');
   addEventListener('scroll', function(){
@@ -811,6 +919,17 @@ function lpRenderVsl(url, type){
       });
       el.addEventListener('pointerleave', function(){ el.style.transform=''; });
     });
+
+    /* rastro de chispas que sigue el mouse */
+    var lastSp=0;
+    addEventListener('pointermove', function(e){
+      var now=performance.now(); if(now-lastSp<32) return; lastSp=now;
+      var s=document.createElement('div'); s.className='sprk';
+      s.style.left=(e.clientX-6)+'px'; s.style.top=(e.clientY-6)+'px';
+      var sc=(Math.random()*.7+.6).toFixed(2); s.style.transform='scale('+sc+')';
+      document.body.appendChild(s);
+      setTimeout(function(){ s.remove(); }, 700);
+    }, {passive:true});
   }
 
   /* hero canvas: partículas + constelación que reacciona al mouse */
