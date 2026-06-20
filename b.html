@@ -1406,7 +1406,8 @@ function lpRenderVsl(url, type){
   var els=steps.map(function(s){ return document.getElementById(s[0]); });
   if(els.some(function(e){ return !e; })) return;       // falta una escena → landing normal
   els.forEach(function(e){ e.classList.add('scene'); });
-  if(RM) return;                                         // reduced-motion → landing scrollable normal
+  /* nota: con reduced-motion igual usamos el modo app (una escena a la vez);
+     sólo se desactivan las animaciones (ya las apaga el CSS global). */
 
   /* una escena cuenta sólo si no está oculta (el VSL aparece sólo con video cargado) */
   function isOn(el){ return !!el && !el.hidden; }
