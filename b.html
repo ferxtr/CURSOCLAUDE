@@ -428,16 +428,16 @@
   .scene{position:relative}
   body.appmode{overflow:hidden;height:100vh;height:100svh}
   /* cada escena es una "pantalla" del software, con scroll interno si hace falta */
+  /* SÓLO la escena activa ocupa la pantalla. Usamos display (no opacity/visibility)
+     para que sea imposible que se superpongan, en cualquier navegador. */
   .appmode .scene{
     position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
-    display:flex;flex-direction:column;justify-content:safe center;
+    flex-direction:column;justify-content:safe center;
     padding-top:64px;padding-bottom:108px;
-    opacity:0;visibility:hidden;transform:translateX(40px) scale(.985);
-    transition:opacity .45s cubic-bezier(.2,.8,.2,1),transform .5s cubic-bezier(.2,.8,.2,1),visibility .5s;
-    z-index:1}
-  .appmode .scene.active{opacity:1;visibility:visible;transform:none;z-index:5}
-  .appmode .scene.back{transform:translateX(-40px) scale(.985)}
-  .appmode .scene[hidden]{display:none}
+    display:none;z-index:1}
+  .appmode .scene.active{display:flex;z-index:5;animation:sceneIn .5s cubic-bezier(.2,.8,.2,1) both}
+  .appmode .scene[hidden]{display:none!important}
+  @keyframes sceneIn{from{opacity:0;transform:translateX(34px) scale(.985)}to{opacity:1;transform:none}}
   /* dentro de una escena las secciones fluyen normal (sin forzar pantalla completa) */
   .appmode .scene>section,.appmode .scene>.replace{min-height:0;padding-top:32px;padding-bottom:32px}
   .appmode .scene>footer{padding:26px 0}
@@ -1406,6 +1406,10 @@ function lpRenderVsl(url, type){
   var els=steps.map(function(s){ return document.getElementById(s[0]); });
   if(els.some(function(e){ return !e; })) return;       // falta una escena → landing normal
   els.forEach(function(e){ e.classList.add('scene'); });
+  /* Activamos el modo app YA y mostramos la 1ª escena, antes de construir el resto.
+     Así, si algo más fallara, igual se ve una sola escena (nunca apiladas). */
+  document.body.classList.add('appmode');
+  els[0].classList.add('active');
   /* nota: con reduced-motion igual usamos el modo app (una escena a la vez);
      sólo se desactivan las animaciones (ya las apaga el CSS global). */
 
@@ -1554,11 +1558,8 @@ function lpRenderVsl(url, type){
   });
   try{ var saved=sessionStorage.getItem('ce_nicho'); if(saved && NICHOS[saved]) applyNicho(saved, false); }catch(_){}
 
-  /* --- arrancar el modo software --- */
-  try{
-    document.body.classList.add('appmode');
-    render(); playScene(els[0]);
-  }catch(err){ document.body.classList.remove('appmode'); }
+  /* --- pintar estado inicial (sin revertir appmode si algo falla) --- */
+  try{ render(); playScene(els[0]); }catch(err){}
 })();
 </script>
 </body>
