@@ -1417,6 +1417,9 @@ function lpRenderVsl(url, type){
   function isOn(el){ return !!el && !el.hidden; }
 
   var cur=0, magicDone=false, realBurst=window.__burst;
+  var t0app=(window.performance&&performance.now)?performance.now():Date.now();
+  var maxReached=0;
+  var vslIndex=steps.findIndex(function(s){ return s[0]==='vslSection'; });
 
   /* evitar un destello de confeti al iniciar (los IO de efectos disparan oculto) */
   window.__burst=function(){};
@@ -1487,7 +1490,7 @@ function lpRenderVsl(url, type){
     var g=0;
     while(!isOn(els[i]) && i>0 && i<steps.length-1 && g++<steps.length){ i+=dir; }   // saltea escenas ocultas
     if(!isOn(els[i])) return;
-    cur=i; render();
+    cur=i; if(cur>maxReached) maxReached=cur; render();
     var el=els[cur]; el.scrollTop=0;
     requestAnimationFrame(function(){ playScene(el); });
     /* la "magia" se genera sola al llegar (si ya eligió un nicho) */
@@ -1497,10 +1500,18 @@ function lpRenderVsl(url, type){
     }
   }
 
-  /* el VSL lo carga el panel de forma asíncrona: re-render cuando aparezca/desaparezca */
+  /* el VSL lo carga el panel de forma asíncrona: re-render cuando aparezca/desaparezca.
+     Si el video carga tarde y el usuario ya pasó la etapa al principio (clic rápido),
+     lo llevamos a verla — sólo durante los primeros segundos para no ser intrusivos. */
   var vslEl=document.getElementById('vslSection');
   if(vslEl && window.MutationObserver){
-    new MutationObserver(function(){ render(); }).observe(vslEl, {attributes:true, attributeFilter:['hidden']});
+    new MutationObserver(function(){
+      render();
+      var now=(window.performance&&performance.now)?performance.now():Date.now();
+      if(vslIndex>0 && isOn(els[vslIndex]) && cur>vslIndex && maxReached<=vslIndex+1 && (now-t0app)<6000){
+        go(vslIndex);
+      }
+    }).observe(vslEl, {attributes:true, attributeFilter:['hidden']});
   }
 
   /* --- navegación --- */
