@@ -470,12 +470,17 @@
   .appmode .topbar{background:rgba(10,8,7,.94)}
   .appmode .topbar .mini-cta{display:none}
 
-  /* ----- mapa de progreso (rail lateral) ----- */
-  .jmap{position:fixed;top:50%;right:16px;transform:translateY(-50%);z-index:65;
-    display:flex;flex-direction:column;padding:7px;border-radius:999px;
-    background:rgba(13,10,8,.5);backdrop-filter:blur(12px);border:1px solid var(--line2);box-shadow:0 10px 30px rgba(0,0,0,.4)}
-  .jmap::before{content:"";position:absolute;left:50%;top:16px;bottom:16px;width:2px;transform:translateX(-50%);
+  /* ----- mapa de progreso (panel lateral deslizable, se autooculta) ----- */
+  .jmap{position:fixed;top:50%;right:12px;transform:translate(140%,-50%);z-index:65;
+    display:flex;flex-direction:column;align-items:center;padding:8px 7px 10px;border-radius:20px;
+    background:rgba(13,10,8,.62);backdrop-filter:blur(12px);border:1px solid var(--line2);box-shadow:0 12px 34px rgba(0,0,0,.5);
+    opacity:0;pointer-events:none;transition:transform .38s cubic-bezier(.2,.8,.2,1),opacity .3s}
+  .jmap.open{transform:translate(0,-50%);opacity:1;pointer-events:auto}
+  .jmap::before{content:"";position:absolute;left:50%;top:36px;bottom:14px;width:2px;transform:translateX(-50%);
     background:linear-gradient(var(--ember),var(--amber));opacity:.22;border-radius:2px;z-index:-1}
+  .jmap .jmap-close{appearance:none;border:none;background:transparent;color:var(--soft);font-size:15px;line-height:1;
+    cursor:pointer;padding:0 4px 7px;margin:0}
+  .jmap .jmap-close:hover{color:#fff}
   .jmap a{position:relative;display:flex;align-items:center;justify-content:center;width:30px;height:30px;text-decoration:none;cursor:pointer}
   .jmap a .nd{width:9px;height:9px;border-radius:50%;background:var(--line);transition:.3s}
   .jmap a.done .nd{background:var(--ember)}
@@ -484,6 +489,18 @@
     background:rgba(20,15,12,.96);border:1px solid var(--line);padding:5px 10px;border-radius:8px;
     opacity:0;transform:translateX(8px);pointer-events:none;transition:.25s;box-shadow:var(--glow)}
   .jmap a:hover .lbl,.jmap a.active .lbl{opacity:1;transform:none}
+
+  /* tirador (flechita suave) para abrir el panel deslizando */
+  .jmap-handle{position:fixed;top:50%;right:0;transform:translateY(-50%);z-index:64;display:none;
+    width:22px;height:52px;align-items:center;justify-content:center;cursor:pointer;
+    background:rgba(13,10,8,.55);backdrop-filter:blur(10px);border:1px solid var(--line2);border-right:none;
+    border-radius:12px 0 0 12px;color:var(--ember-hot);font-size:13px;box-shadow:-6px 0 16px rgba(0,0,0,.3);
+    transition:opacity .3s,transform .2s}
+  .appmode .jmap-handle{display:flex}
+  .jmap-handle:hover{transform:translateY(-50%) translateX(-2px)}
+  .jmap-handle::before{content:"";position:absolute;left:-1px;top:50%;width:3px;height:18px;transform:translateY(-50%);
+    border-radius:3px;background:linear-gradient(var(--ember),var(--amber));opacity:.65}
+  body.jmap-on .jmap-handle{opacity:0;pointer-events:none}
 
   /* ----- escena de personalización (quiz de nicho) ----- */
   .quiz .chips{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:30px}
@@ -1381,14 +1398,32 @@ function lpRenderVsl(url, type){
   setTimeout(function(){ window.__burst=realBurst||function(){};
     var cf=document.getElementById('confetti'); if(cf){ cf.style.display='none'; } }, 1900);
 
-  /* --- mapa lateral de progreso --- */
+  /* --- mapa lateral de progreso (panel deslizable, se autooculta) --- */
   var map=document.createElement('nav'); map.className='jmap'; map.setAttribute('aria-label','Progreso');
+  var mClose=document.createElement('button'); mClose.className='jmap-close'; mClose.type='button';
+  mClose.setAttribute('aria-label','Ocultar progreso'); mClose.innerHTML='›';
+  map.appendChild(mClose);
   steps.forEach(function(s,i){
     var a=document.createElement('a'); a.href='#'+s[0]; a.dataset.i=i;
     a.innerHTML='<span class="lbl">'+(i+1)+'. '+s[1]+'</span><span class="nd"></span>';
     map.appendChild(a);
   });
   document.body.appendChild(map);
+  var mapLinks=[].slice.call(map.querySelectorAll('a'));
+
+  /* tirador para abrir deslizando */
+  var mHandle=document.createElement('button'); mHandle.className='jmap-handle'; mHandle.type='button';
+  mHandle.setAttribute('aria-label','Mostrar progreso'); mHandle.innerHTML='‹';
+  document.body.appendChild(mHandle);
+
+  var peekT=null, mapPinned=false;
+  function showMap(){ map.classList.add('open'); document.body.classList.add('jmap-on'); }
+  function hideMap(){ map.classList.remove('open'); document.body.classList.remove('jmap-on'); }
+  function openMap(){ mapPinned=true; clearTimeout(peekT); showMap(); }     // abierto fijo (hasta cerrar)
+  function closeMap(){ mapPinned=false; clearTimeout(peekT); hideMap(); }
+  function peekMap(){ if(mapPinned) return; showMap(); clearTimeout(peekT); peekT=setTimeout(function(){ if(!mapPinned) hideMap(); }, 1900); }
+  mHandle.addEventListener('click', openMap);
+  mClose.addEventListener('click', function(e){ e.stopPropagation(); closeMap(); });
 
   /* --- barra inferior tipo asistente --- */
   var nav=document.createElement('div'); nav.className='wiznav';
@@ -1428,7 +1463,7 @@ function lpRenderVsl(url, type){
 
   function render(){
     els.forEach(function(e,i){ e.classList.toggle('active', i===cur); e.classList.toggle('back', i<cur); });
-    [].forEach.call(map.children, function(a,i){ a.style.display=isOn(els[i])?'':'none'; a.classList.toggle('active', i===cur); a.classList.toggle('done', i<cur); });
+    mapLinks.forEach(function(a,i){ a.style.display=isOn(els[i])?'':'none'; a.classList.toggle('active', i===cur); a.classList.toggle('done', i<cur); });
     [].forEach.call(seg.children, function(s,i){ s.style.display=isOn(els[i])?'':'none'; s.classList.toggle('on', i<=cur); });
     var total=0, pos=0;
     els.forEach(function(e,i){ if(isOn(e)){ total++; if(i<=cur) pos++; } });
@@ -1445,7 +1480,7 @@ function lpRenderVsl(url, type){
     var g=0;
     while(!isOn(els[i]) && i>0 && i<steps.length-1 && g++<steps.length){ i+=dir; }   // saltea escenas ocultas
     if(!isOn(els[i])) return;
-    cur=i; if(cur>maxReached) maxReached=cur; render();
+    cur=i; if(cur>maxReached) maxReached=cur; render(); peekMap();
     var el=els[cur]; el.scrollTop=0;
     requestAnimationFrame(function(){ playScene(el); });
     /* la "magia" se genera sola al llegar (si ya eligió un nicho) */
@@ -1488,12 +1523,15 @@ function lpRenderVsl(url, type){
     else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go(cur-1); }
   });
 
-  /* swipe horizontal (no interfiere con el scroll vertical interno) */
-  var sx=0, sy=0;
-  addEventListener('touchstart', function(e){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; }, {passive:true});
+  /* swipe horizontal: navega entre escenas; desde el borde derecho abre el panel */
+  var sx=0, sy=0, sEdge=false;
+  addEventListener('touchstart', function(e){ sx=e.touches[0].clientX; sy=e.touches[0].clientY; sEdge=(sx>innerWidth-40); }, {passive:true});
   addEventListener('touchend', function(e){
     var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
-    if(Math.abs(dx)>72 && Math.abs(dx)>Math.abs(dy)*1.7){ go(cur+(dx<0?1:-1)); }
+    if(Math.abs(dx)<=Math.abs(dy)*1.4) return;                 // gesto vertical → ignorar
+    if(sEdge && dx<-36){ openMap(); return; }                  // desliza desde el borde derecho → abre panel
+    if(map.classList.contains('open') && dx>36){ closeMap(); return; } // panel abierto + desliza derecha → cierra
+    if(Math.abs(dx)>72){ go(cur+(dx<0?1:-1)); }                // si no, navega entre escenas
   }, {passive:true});
 
   /* --- personalización por nicho --- */
@@ -1525,7 +1563,10 @@ function lpRenderVsl(url, type){
   try{ var saved=sessionStorage.getItem('ce_nicho'); if(saved && NICHOS[saved]) applyNicho(saved, false); }catch(_){}
 
   /* --- pintar estado inicial (sin revertir appmode si algo falla) --- */
-  try{ render(); playScene(els[0]); }catch(err){}
+  try{ render(); playScene(els[0]);
+    var introEl=document.getElementById('intro');
+    setTimeout(peekMap, introEl?1800:350);   // peek inicial recién cuando se va el intro
+  }catch(err){}
 })();
 </script>
 </body>
