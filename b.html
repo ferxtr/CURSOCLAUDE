@@ -432,10 +432,10 @@
      para que sea imposible que se superpongan, en cualquier navegador. */
   .appmode .scene{
     position:fixed;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
-    flex-direction:column;justify-content:safe center;
-    padding-top:64px;padding-bottom:108px;
+    padding-top:74px;padding-bottom:116px;
     display:none;z-index:1}
-  .appmode .scene.active{display:flex;z-index:5;animation:sceneIn .5s cubic-bezier(.2,.8,.2,1) both}
+  /* display:block (no flex): el contenido fluye y scrollea; nunca se comprime ni se encima */
+  .appmode .scene.active{display:block;z-index:5;animation:sceneIn .5s cubic-bezier(.2,.8,.2,1) both}
   .appmode .scene[hidden]{display:none!important}
   @keyframes sceneIn{from{opacity:0;transform:translateX(34px) scale(.985)}to{opacity:1;transform:none}}
   /* dentro de una escena las secciones fluyen normal (sin forzar pantalla completa) */
