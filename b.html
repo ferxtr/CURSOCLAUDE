@@ -965,10 +965,15 @@ function recalc(){
   if(barTotal) barTotal.textContent = txt;
 }
 
-/* ---- buy button: a Hotmart reenviando el rastro de Meta + tag de variante. Sin AddToCart (lo hace Hotmart). ---- */
+/* ---- buy button: dispara AddToCart (pixel del navegador + CAPI con el MISMO event_id,
+       para que Meta los una en uno) y va a Hotmart reenviando el rastro de Meta.
+       El Purchase lo manda únicamente el webhook (CAPI) → así no hay duplicados. ---- */
 document.getElementById('buyBtn').addEventListener('click', function(e){
   e.preventDefault();
-  lpTrack('cta_click', lpUuid()); // registra el click de CTA por variante en el panel (keepalive)
+  var atcId = lpUuid();
+  if(PIXEL_ON && window.fbq) fbq('track','AddToCart', {currency:'USD', value:BASE_PRICE}, {eventID:atcId});
+  lpTrack('add_to_cart', atcId);   // AddToCart por CAPI (servidor) con el mismo event_id
+  lpTrack('cta_click', lpUuid());  // métrica interna del panel (no va a Meta)
   const dest = lpBuildCheckoutUrl(HOTMART_URL);
   if(dest){ window.location.href = dest; }
   else { alert('Falta configurar el link de Hotmart en el panel /admin'); }
