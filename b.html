@@ -574,7 +574,7 @@
     </div>
 
     <div class="cta-row reveal d3">
-      <a href="#meta" class="cta magnetic">Empezar el recorrido <span class="sm">Te lleva paso a paso hasta tu sistema</span></a>
+      <a href="#vslSection" class="cta magnetic">Empezar el recorrido <span class="sm">Te lleva paso a paso hasta tu sistema</span></a>
       <span class="undercta">✦ Paso a paso · ✦ Sin experiencia previa · ✦ Una sola tarde</span>
     </div>
   </div>
@@ -585,31 +585,13 @@
   <div class="wrap">
     <div class="head reveal">
       <p class="kicker">La prueba eres tú</p>
-      <h2 class="title">Este anuncio lo hizo la IA. Y tú vas a poder hacer los tuyos igual.</h2>
+      <h2 class="title">Este VSL lo hizo una IA — y vas a poder hacer los tuyos en minutos, automáticamente, también. Míralo:</h2>
     </div>
     <div class="frame reveal" id="vslFrame"></div>
     <p class="proof-note reveal">Si este anuncio te trajo hasta aquí, ya viste el sistema funcionando. Ahora aprendes a hacerlo tú.</p>
     <div class="cta-row vcta reveal">
       <a href="#comprar" class="cta magnetic">Quiero armar mi sistema <span class="sm">Acceso inmediato · Empieza hoy mismo</span></a>
     </div>
-  </div>
-</section>
-
-<!-- META · PERSONALIZACIÓN (escena 2 del recorrido) -->
-<section class="quiz scene" id="meta">
-  <div class="orb" data-plx="0.7" style="width:320px;height:320px;background:var(--amber);top:-40px;right:-70px"></div>
-  <div class="wrap">
-    <p class="kicker reveal">Hagámoslo tuyo</p>
-    <h2 class="title reveal">Antes de empezar… ¿qué querés vender?</h2>
-    <p class="lead reveal d1">Elegí un punto de partida y te muestro cómo se vería <b>tu</b> sistema. Lo podés cambiar cuando quieras.</p>
-    <div class="chips reveal d1">
-      <button class="chip" data-n="peso" type="button"><span class="ico">🔥</span><span>Salud y peso<small>Bajar de peso, hábitos</small></span></button>
-      <button class="chip" data-n="recetas" type="button"><span class="ico">🥗</span><span>Recetas y cocina<small>Comida saludable, menús</small></span></button>
-      <button class="chip" data-n="nego" type="button"><span class="ico">🛒</span><span>Negocio digital<small>MercadoLibre, ecommerce</small></span></button>
-      <button class="chip" data-n="finanzas" type="button"><span class="ico">📈</span><span>Finanzas<small>Ingresos, ahorro</small></span></button>
-      <button class="chip" data-n="otro" type="button"><span class="ico">✨</span><span>Otra cosa<small>Tengo otra idea</small></span></button>
-    </div>
-    <p class="quiz-confirm" id="quizConfirm" aria-live="polite"></p>
   </div>
 </section>
 
@@ -634,7 +616,7 @@
 <section class="pain">
   <div class="wrap">
     <p class="kicker reveal">El problema real</p>
-    <h2 class="title reveal">Pagas 4 suscripciones, abres 5 apps… y sigues <span class="hl">sin vender NADA.</span></h2>
+    <h2 class="title reveal">Pagas mentorías, suscripciones y cursos para Meta… y sigues <span class="hl">sin vender nada.</span></h2>
     <p class="lead reveal d1">Te venden cada herramienta por separado para que nunca termines. Saltás entre apps, se te va la tarde y el producto sigue sin existir.</p>
     <div class="pain-list">
       <div class="pain-item glass reveal" data-tilt><span class="x">✕</span><p><b>El infoproducto</b> te traba semanas: no sabés qué incluir ni cómo armarlo.</p></div>
@@ -645,20 +627,6 @@
 </section>
 
 </div>
-
-<!-- MAGIC BANNER + PLAYGROUND -->
-<section class="magic scene" id="magic">
-  <div class="wrap">
-    <p class="kicker reveal">La parte divertida</p>
-    <h2 class="boom" data-boom="Mira todo lo que puedes hacer"></h2>
-    <p class="lead reveal d1">Escribí cualquier idea y mirá cómo se convierte en un producto listo para vender. Es una demo — pero así de simple se siente.</p>
-    <div class="play glass reveal d1">
-      <input id="ideaIn" type="text" maxlength="60" placeholder="Ej: dieta keto para principiantes" aria-label="Tu idea" />
-      <button id="ideaBtn" class="cta magnetic" type="button">✨ Generar magia</button>
-    </div>
-    <div class="play-out" id="ideaOut"></div>
-  </div>
-</section>
 
 <div class="scene" id="metodo">
 
@@ -1378,7 +1346,7 @@ function lpRenderVsl(url, type){
    ===================================================================== */
 (function(){
   var RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var steps=[['hero','Inicio'],['vslSection','El anuncio'],['meta','Tu meta'],['problema','El problema'],['magic','La magia'],
+  var steps=[['hero','Inicio'],['vslSection','El anuncio'],['problema','El problema'],
              ['metodo','El método'],['pruebas','Pruebas'],['oferta','La oferta'],['comprar','Comprar']];
   var els=steps.map(function(s){ return document.getElementById(s[0]); });
   if(els.some(function(e){ return !e; })) return;       // falta una escena → landing normal
@@ -1488,11 +1456,6 @@ function lpRenderVsl(url, type){
     cur=i; if(cur>maxReached) maxReached=cur; render(); peekMap();
     var el=els[cur]; el.scrollTop=0;
     requestAnimationFrame(function(){ playScene(el); });
-    /* la "magia" se genera sola al llegar (si ya eligió un nicho) */
-    if(steps[cur][0]==='magic' && !magicDone){
-      magicDone=true;
-      setTimeout(function(){ var b=document.getElementById('ideaBtn'); if(b) b.click(); }, 700);
-    }
   }
 
   /* el VSL lo carga el panel de forma asíncrona: re-render cuando aparezca/desaparezca.
@@ -1538,34 +1501,6 @@ function lpRenderVsl(url, type){
     if(map.classList.contains('open') && dx>36){ closeMap(); return; } // panel abierto + desliza derecha → cierra
     if(Math.abs(dx)>72){ go(cur+(dx<0?1:-1)); }                // si no, navega entre escenas
   }, {passive:true});
-
-  /* --- personalización por nicho --- */
-  var NICHOS={
-    peso:    {t:'salud y bajar de peso',      ex:'plan para bajar de peso sin dietas'},
-    recetas: {t:'recetas y cocina saludable', ex:'recetas saludables para toda la semana'},
-    nego:    {t:'tu negocio digital',         ex:'cómo vender en MercadoLibre desde cero'},
-    finanzas:{t:'finanzas e ingresos',        ex:'finanzas personales para principiantes'},
-    otro:    {t:'tu idea',                     ex:'tu idea'}
-  };
-  function applyNicho(key, fromClick){
-    var n=NICHOS[key]||NICHOS.otro;
-    var inp=document.getElementById('ideaIn');
-    if(inp){ inp.value=n.ex; inp.setAttribute('placeholder','Ej: '+n.ex); }
-    magicDone=false;
-    if(fromClick){
-      var conf=document.getElementById('quizConfirm');
-      if(conf){ conf.innerHTML='Listo. Te muestro cómo se arma un sistema para <b>'+n.t+'</b> — paso a paso 👇'; conf.classList.add('in'); }
-      setTimeout(function(){ go(2); }, 1100);
-    }
-  }
-  document.addEventListener('click', function(e){
-    var c=e.target.closest('.chip'); if(!c) return;
-    var key=c.dataset.n;
-    [].forEach.call(document.querySelectorAll('.chip'), function(x){ x.classList.toggle('sel', x===c); });
-    try{ sessionStorage.setItem('ce_nicho', key); }catch(_){}
-    applyNicho(key, true);
-  });
-  try{ var saved=sessionStorage.getItem('ce_nicho'); if(saved && NICHOS[saved]) applyNicho(saved, false); }catch(_){}
 
   /* --- pintar estado inicial (sin revertir appmode si algo falla) --- */
   try{ render(); playScene(els[0]);
